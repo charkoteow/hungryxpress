@@ -105,6 +105,12 @@ class UserDataTable extends DataTable
 
             ],
             [
+                'data' => 'device_os',
+                'title' => 'O.S',
+                'searchable' => true,
+
+            ],
+            [
                 'data' => 'updated_at',
                 'title' => trans('lang.user_updated_at'),
                 'searchable' => false,

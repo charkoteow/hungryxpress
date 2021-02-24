@@ -77,6 +77,7 @@ class UserAPIController extends Controller
             $user = new User;
             $user->name = $request->input('name');
             $user->email = $request->input('email');
+            $user->device_os = $request->input('device_os', '');
             $user->device_token = $request->input('device_token', '');
             $user->password = Hash::make($request->input('password'));
             $user->api_token = str_random(60);

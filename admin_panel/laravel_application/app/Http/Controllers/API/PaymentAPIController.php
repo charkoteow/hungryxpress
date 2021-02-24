@@ -11,6 +11,7 @@ use InfyOm\Generator\Criteria\LimitOffsetCriteria;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Illuminate\Support\Facades\Response;
 use Prettus\Repository\Exceptions\RepositoryException;
+use App\Repositories\UserRepository;
 use Flash;
 
 /**
@@ -19,11 +20,14 @@ use Flash;
  */
 class PaymentAPIController extends Controller
 {
+    /** @var  UserRepository */
+    private $userRepository;
     /** @var  PaymentRepository */
     private $paymentRepository;
 
-    public function __construct(PaymentRepository $paymentRepo)
+    public function __construct(UserRepository $userRepo, PaymentRepository $paymentRepo)
     {
+        $this->userRepository = $userRepo;
         $this->paymentRepository = $paymentRepo;
     }
 
@@ -82,4 +86,26 @@ class PaymentAPIController extends Controller
         }
         return $this->sendResponse([array_values($payments->toArray()),array_keys($payments->toArray())], 'Payment retrieved successfully');
     }
+
+    public function byDeviceUseds()
+    {
+        $payments = [];
+        if (!empty($this->userRepository)) {
+            $payments = $this->userRepository
+            ->orderBy("device_os",'asc')->all()->map(function ($row) {
+                if ($row['device_os'] == "iOS"){
+                    $row['device_os'] = "iOS";
+                } else if ($row['device_os'] == "Android"){
+                    $row['device_os'] = "Android";
+                } else {
+                    $row['device_os'] = 'Web';
+                }
+                return $row;
+            })->groupBy('device_os')->map(function ($row) {
+                return $row->count('id');
+            });
+        }
+        return $this->sendResponse([array_values($payments->toArray()),array_keys($payments->toArray())], 'Payment Methods retrieved successfully');
+    }
+
 }

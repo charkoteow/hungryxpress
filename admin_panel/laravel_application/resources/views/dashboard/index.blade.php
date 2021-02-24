@@ -165,6 +165,31 @@
                 </div>
             </div>
         </div>
+
+        @if(auth()->user()->hasRole('admin'))
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header no-border">
+                        <div class="d-flex justify-content-between">
+                            <h3 class="card-title">Most used devices</h3>
+                            <a href="{!! route('payments.index') !!}">{{trans('lang.dashboard_view_all_payments')}}</a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="position-relative mb-4">
+                            <canvas id="devices-chart" height="270"></canvas>
+                        </div>
+
+                        <div class="d-flex flex-row justify-content-end">
+                            <span class="mr-2"> <i class="fa fa-square text-primary"></i> {{trans('lang.dashboard_this_year')}} </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
     </div>
 
 @endsection
@@ -244,6 +269,42 @@
             })
         }
 
+        /**
+         * Statistics Devices
+         */
+        function renderChartPieDevices(chartNode, data, labels) {
+            return new Chart(chartNode, {
+                type: 'pie',
+                data: {
+				    datasets: [
+                        {
+					        data: data,
+                            backgroundColor: [
+                                "#0074D9",
+                                "#2ECC40",
+                                "#ccc"
+                            ]
+                        }
+                    ],
+                labels: labels,
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: {
+                    display: true,
+                    position: "left",
+                    labels: {
+                        padding: 20
+                    },
+                },
+                tooltips: {
+                    enabled: true,
+                }
+            }
+            })
+        }
+
         $(function () {
             'use strict'
 
@@ -255,6 +316,20 @@
                     var data = result.data[0];
                     var labels = result.data[1];
                     renderChart($salesChart, data, labels)
+                },
+                error: function (err) {
+                    $("#loadingMessage").html("Error");
+                }
+            });
+
+            var $deviceOSChart = $('#devices-chart')
+            $.ajax({
+                url: "{!! $deviceOSUrl !!}",
+                success: function (result) {
+                    $("#loadingMessage").html("");
+                    var data = result.data[0];
+                    var labels = result.data[1];
+                    renderChartPieDevices($deviceOSChart, data, labels)
                 },
                 error: function (err) {
                     $("#loadingMessage").html("Error");

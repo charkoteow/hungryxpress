@@ -87,6 +87,7 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('order_statuses', 'API\OrderStatusAPIController');
 
     Route::get('payments/byMonth', 'API\PaymentAPIController@byMonth')->name('payments.byMonth');
+    Route::get('payments/byDeviceUseds', 'API\PaymentAPIController@byDeviceUseds')->name('payments.byDeviceUseds');
     Route::resource('payments', 'API\PaymentAPIController');
 
     Route::get('favorites/exist', 'API\FavoriteAPIController@exist');
