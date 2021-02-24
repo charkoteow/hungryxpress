@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use RachidLaasri\LaravelInstaller\Helpers\MigrationsHelper;
 use Themsaid\Langman\Manager;
+use Illuminate\Support\Facades\DB;
 
 class AppSettingController extends Controller
 {
