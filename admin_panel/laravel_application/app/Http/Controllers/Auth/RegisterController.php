@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class RegisterController extends Controller
 {
@@ -90,6 +92,18 @@ class RegisterController extends Controller
         $defaultRoles = $this->roleRepository->findByField('default', '1');
         $defaultRoles = $defaultRoles->pluck('name')->toArray();
         $user->assignRole($defaultRoles);
+
+        // email data
+        $email_data = array(
+            'name' => $data['name'],
+            'email' => $data['email'],
+        );
+        // send email with the template
+        Mail::send('emails.welcome-email-template', $email_data, function ($message) use ($email_data) {
+            $message->to($email_data['email'], $email_data['name'])
+                ->subject('Welcome to Hungry Express')
+                ->from('ahmadshakaff@gmail.com', 'HungryExpress');
+        });
 
         return $user;
     }
