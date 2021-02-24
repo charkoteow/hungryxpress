@@ -93,6 +93,140 @@ class AppSettingController extends Controller
         return redirect()->back();
     }
 
+    public function message(Request $request)
+    {
+        if(!env('APP_DEMO',false)){
+            define('API_ACCESS_KEY', setting('fcm_key'));
+
+            $user = $request['user'];
+            $title = $request['title'];
+            $message = $request['message'];
+            
+            if ($request['client'] == 1){
+                $this->sendFCMMultiple(4, $title, $message);
+                // return 'client';
+            } else if ($request['driver'] == 1){
+                $this->sendFCMMultiple(5, $title, $message);
+                // return 'driver';
+            } else if ($request['manager'] == 1){
+                $this->sendFCMMultiple(3, $title, $message);
+                // return 'manager';
+            } else if ($request['admin'] == 1){
+                $this->sendFCMMultiple(2, $title, $message);
+                // return 'manager';
+            } else if ($request['specific'] == 1){
+                $this->sendFCMSingle($user, $title, $message);
+                //$this->sendFCMMultiple(3, $title, $message);
+                // return 'manager';
+            } else {
+                Flash::warning('Parece que hubo un problema');
+            }
+
+            Flash::success(trans('lang.app_setting_global').' updated successfully.');
+            Artisan::call("config:clear");
+        }else{
+            Flash::warning('This is only demo app you can\'t change this section ');
+        }
+        return redirect()->back();
+    }
+
+    //Metodo para un multiples device_token
+    private function sendFCMMultiple($rol, $title_request, $message_request){
+        $rol_message = $rol;
+        $result = DB::table('users')
+        ->select(
+            'users.device_token'
+        )
+        ->leftjoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+        ->where('model_has_roles.role_id', $rol_message)
+        ->where('users.device_token', '<>', null)
+        ->get();
+        $myArray = json_decode($result, true);
+
+        foreach ($myArray as $user){
+
+            $title = $title_request;
+            $message = strip_tags($message_request);
+            $registrationIds = $user['device_token'];
+            #prep the bundle
+            $msg = array(
+                'body'  => $message,
+                'title' => $title,
+                'sound' => 'default',
+                'vibrate' => '1',
+                'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
+                'color' => setting('main_color'),
+                'id' => '1',
+                'status' => 'done',
+                // 'icon'=>'https://www.example.com/images/icon.png'
+            );
+            $fields = array(
+                'to' => $registrationIds,
+                'notification' => $msg,
+                'priority' => 'high'
+            );
+            $headers = array(
+                'Authorization: key=' . API_ACCESS_KEY,
+                'Content-Type: application/json'
+            );
+            #Send Reponse To FireBase Server
+            $ch = curl_init();
+            curl_setopt( $ch,CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+            curl_setopt( $ch,CURLOPT_POST, true );
+            curl_setopt( $ch,CURLOPT_HTTPHEADER, $headers );
+            curl_setopt( $ch,CURLOPT_RETURNTRANSFER, true );
+            curl_setopt( $ch,CURLOPT_SSL_VERIFYPEER, false );
+            curl_setopt( $ch,CURLOPT_POSTFIELDS, json_encode( $fields ) );
+
+            $result = curl_exec ( $ch );
+            // echo "<pre>";print_r($result);exit;
+            curl_close ( $ch );
+        }
+    }
+
+    //Metodo para un solo device_token
+    private function sendFCMSingle($user, $title_request, $message_request){
+        $fcmUrl = 'https://fcm.googleapis.com/fcm/send';
+        $user_id = $user;
+        $user_token = $this->userRepository->findByField('id', $user_id)->first();
+
+        $resultadoMensaje = str_replace("[user]", $user_token['name'], strip_tags($message_request));
+
+        $notification = [
+            'title' => $title_request,
+            'body' => $resultadoMensaje,
+            'sound' => 'default',
+            'vibrate' => '1',
+            'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
+            'color' => setting('main_color'),
+            'id' => '1',
+            'status' => 'done'
+        ];
+        $extraNotificationData = ["message" => $notification,"moredata" =>'dd'];
+
+        $fcmNotification = [
+            'to' => $user_token['device_token'], //single token
+            'notification' => $notification,
+            'priority' => 'high',
+            //'data' => $extraNotificationData
+        ];
+
+        $headers = [
+            'Authorization: key=' . API_ACCESS_KEY,
+            'Content-Type: application/json'
+        ];
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $fcmUrl);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fcmNotification));
+        $result = curl_exec($ch);
+        curl_close($ch);
+    }
+
     public function syncTranslation(Request $request)
     {
         if(!env('APP_DEMO',false)) {

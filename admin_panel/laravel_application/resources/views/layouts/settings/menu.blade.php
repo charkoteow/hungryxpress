@@ -147,3 +147,24 @@
         </ul>
     </div>
 </div>
+
+<!-- MENU NEW -->
+<div class="card {{ Request::is('settings/app/sendMessage*') || Request::is('settings/app/multipleExtras*') || Request::is('settings/app/activateFoods*') || Request::is('settings/app/activateFoodsByCategory*') ? '' : 'collapsed-card' }}">
+    <div class="card-header">
+        <h3 class="card-title">Additional Actions</h3>
+
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fa {{ Request::is('settings/app/sendMessage*') ? 'fa-minus' : 'fa-plus' }}"></i>
+            </button>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        <ul class="nav nav-pills flex-column">
+            <li class="nav-item">
+                <a href="{!! url('settings/app/sendMessage') !!}" class="nav-link {{  Request::is('settings/app/sendMessage*') ? 'selected' : '' }}">
+                    <i class="fa fa-inbox"></i> Messages
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
