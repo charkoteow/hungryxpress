@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Prettus\Validator\Exceptions\ValidatorException;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class UserAPIController extends Controller
 {
@@ -86,6 +88,18 @@ class UserAPIController extends Controller
             $defaultRoles = $this->roleRepository->findByField('default', '1');
             $defaultRoles = $defaultRoles->pluck('name')->toArray();
             $user->assignRole($defaultRoles);
+
+            // email data
+            $email_data = array(
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+            );
+            // send email with the template
+            Mail::send('emails.welcome-email-template', $email_data, function ($message) use ($email_data) {
+                $message->to($email_data['email'], $email_data['name'])
+                    ->subject('Welcome to Hungry Express')
+                    ->from('ahmadshakaff@gmail.com', 'HungryExpress');
+            });
 
         } catch (\Exception $e) {
             Log::error($e->getMessage());
