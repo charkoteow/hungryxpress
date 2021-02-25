@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../generated/l10n.dart';
 import '../helpers/helper.dart';
 import '../models/restaurant.dart';
+import '../pages/market_edit.dart';
 
 class CardWidget extends StatelessWidget {
   final Restaurant restaurant;
@@ -116,6 +117,25 @@ class CardWidget extends StatelessWidget {
                     ],
                   ),
                 ),
+                //Boton Edit Store
+                SizedBox(width: 15),
+                Expanded(
+                  child: Column(
+                    children: <Widget>[
+                      FlatButton(
+                        padding: EdgeInsets.all(0),
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => MarketEditWidget(id: restaurant.id)));
+                        },
+                        child: Icon(Icons.edit,
+                            color: Theme.of(context).primaryColor),
+                        color: Theme.of(context).accentColor,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5)),
+                      ),
+                    ],
+                  ),
+                )
               ],
             ),
           )

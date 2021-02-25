@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../helpers/custom_trace.dart';
 import '../helpers/helper.dart';
 import '../models/address.dart';
+import '../models/cuisine.dart';
 import '../models/filter.dart';
 import '../models/restaurant.dart';
 import '../models/review.dart';
@@ -155,5 +156,86 @@ Future<Review> addRestaurantReview(Review review, Restaurant restaurant) async {
   } catch (e) {
     print(CustomTrace(StackTrace.current, message: url).toString());
     return Review.fromJSON({});
+  }
+}
+
+Future<Restaurant> closedRestaurant(Restaurant restaurant) async {
+  Uri uri = Helper.getUri('api/restaurants/${restaurant.id}');
+  User _user = userRepo.currentUser.value;
+  if (_user.apiToken == null) {
+    return new Restaurant();
+  }
+  Map<String, dynamic> _queryParams = {};
+  _queryParams['api_token'] = _user.apiToken;
+  uri = uri.replace(queryParameters: _queryParams);
+
+  //final String url = '${GlobalConfiguration().getString('api_base_url')}orders/${order.id}?$_apiToken';
+  final client = new http.Client();
+  final response = await client.put(
+    uri.toString(),
+    headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+    body: json.encode(restaurant.closedMap()),
+  );
+  return Restaurant.fromJSON(json.decode(response.body)['data']);
+}
+
+Future<Restaurant> openRestaurant(Restaurant restaurant) async {
+  Uri uri = Helper.getUri('api/restaurants/${restaurant.id}');
+  User _user = userRepo.currentUser.value;
+  if (_user.apiToken == null) {
+    return new Restaurant();
+  }
+  Map<String, dynamic> _queryParams = {};
+  _queryParams['api_token'] = _user.apiToken;
+  uri = uri.replace(queryParameters: _queryParams);
+
+  //final String url = '${GlobalConfiguration().getString('api_base_url')}orders/${order.id}?$_apiToken';
+  final client = new http.Client();
+  final response = await client.put(
+    uri.toString(),
+    headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+    body: json.encode(restaurant.openRestaurantMap()),
+  );
+  return Restaurant.fromJSON(json.decode(response.body)['data']);
+}
+
+//Update store
+Future<Restaurant> updateMarket(Restaurant restaurant) async {
+  Uri uri = Helper.getUri('api/restaurants/${restaurant.id}');
+  User _user = userRepo.currentUser.value;
+  if (_user.apiToken == null) {
+    return new Restaurant();
+  }
+  Map<String, dynamic> _queryParams = {};
+  _queryParams['api_token'] = _user.apiToken;
+  uri = uri.replace(queryParameters: _queryParams);
+
+  //final String url = '${GlobalConfiguration().getString('api_base_url')}orders/${order.id}?$_apiToken';
+  final client = new http.Client();
+  final response = await client.put(
+    uri.toString(),
+    headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+    body: json.encode(restaurant.toMap()),
+  );
+  return Restaurant.fromJSON(json.decode(response.body)['data']);
+}
+
+Future<Stream<Cuisine>> getCuisines() async {
+  Uri uri = Helper.getUri('api/cuisines');
+  Map<String, dynamic> _queryParams = {};
+  uri = uri.replace(queryParameters: _queryParams);
+  try {
+    final client = new http.Client();
+    final streamedRest = await client.send(http.Request('get', uri));
+
+    return streamedRest.stream
+        .transform(utf8.decoder)
+        .transform(json.decoder)
+        .map((data) => Helper.getData(data))
+        .expand((data) => (data as List))
+        .map((data) => Cuisine.fromJSON(data));
+  } catch (e) {
+    print(CustomTrace(StackTrace.current, message: uri.toString()).toString());
+    return new Stream.value(new Cuisine.fromJSON({}));
   }
 }

@@ -151,6 +151,68 @@ class _DetailsWidgetState extends StateMVC<DetailsWidget> {
                             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                             child: Helper.applyHtml(context, _con.restaurant.description),
                           ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                            child: SwitchListTile(
+                              title: _con.restaurant.closed ? Text('Closed shop') : Text('Open shop'),
+                              value: _con.restaurant.closed ? false : true,
+                              onChanged: (value) {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    // return object of type Dialog
+                                    return AlertDialog(
+                                      title: Wrap(
+                                        spacing: 10,
+                                        children: <Widget>[
+                                          Icon(Icons.report, color: Colors.orange),
+                                          Text(
+                                            S.of(context).confirmation,
+                                            style: TextStyle(color: Colors.orange),
+                                          ),
+                                        ],
+                                      ),
+                                      content: Text('Are you sure you want to change the status of your store?'),
+                                      contentPadding: EdgeInsets.symmetric(horizontal: 30, vertical: 25),
+                                      actions: <Widget>[
+                                        FlatButton(
+                                          child: new Text(
+                                            S.of(context).yes,
+                                            style: TextStyle(color: Theme.of(context).hintColor),
+                                          ),
+                                          onPressed: () {
+                                            // setState(() => _con.restaurant.closed = value);
+                                            setState(() {
+                                              if (value) {
+                                                _con.restaurant.closed = false;
+                                              } else {
+                                                _con.restaurant.closed = true;
+                                              }
+                                            });
+                                            _con.restaurant.closed
+                                              ? _con.doStatusStoreOff(_con.restaurant)
+                                              : _con.doStatusStoreOn(_con.restaurant);
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                        FlatButton(
+                                          child: new Text(
+                                            S.of(context).close,
+                                            style: TextStyle(color: Colors.orange),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              activeTrackColor: Theme.of(context).accentColor.withOpacity(0.5),
+                              activeColor: Theme.of(context).accentColor,
+                            )
+                          ),
                           ImageThumbCarouselWidget(galleriesList: _con.galleries),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),

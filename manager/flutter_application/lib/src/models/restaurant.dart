@@ -72,14 +72,34 @@ class Restaurant {
     }
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'latitude': latitude,
-      'longitude': longitude,
-      'delivery_fee': deliveryFee,
-      'distance': distance,
-    };
+    Map toMap() {
+    var map = new Map<String, dynamic>();
+    map["id"] = id;
+    map["name"] = name;
+    map["description"] = description;
+    map["information"] = information;
+    map["closed"] = closed;
+    map["phone"] = phone;
+    map["mobile"] = mobile;
+    map["latitude"] = latitude;
+    map["longitude"] = longitude;
+    map["delivery_fee"] = deliveryFee;
+    map["distance"] = distance;
+    return map;
   }
+
+  Map closedMap() {
+    var map = new Map<String, dynamic>();
+    map["id"] = id;
+    map["closed"] = true;
+    return map;
+  }
+
+  Map openRestaurantMap() {
+    var map = new Map<String, dynamic>();
+    map["id"] = id;
+    map["closed"] = false;
+    return map;
+  }
+
 }
