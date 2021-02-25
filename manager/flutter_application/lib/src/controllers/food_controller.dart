@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 
 import '../../generated/l10n.dart';
 import '../models/cart.dart';
+import '../models/category.dart';
 import '../models/extra.dart';
 import '../models/favorite.dart';
 import '../models/food.dart';
+import '../models/restaurant.dart';
+import '../repository/category_repository.dart';
 import '../repository/food_repository.dart';
+import '../repository/extra_repository.dart';
+import '../repository/restaurant_repository.dart';
 
 class FoodController extends ControllerMVC {
   Food food;
@@ -15,6 +21,8 @@ class FoodController extends ControllerMVC {
   Cart cart;
   Favorite favorite;
   bool loadCart = false;
+  List<Restaurant> restaurants = <Restaurant>[];
+  List<Category> categories = <Category>[];
   GlobalKey<ScaffoldState> scaffoldKey;
 
   FoodController() {
@@ -111,5 +119,124 @@ class FoodController extends ControllerMVC {
       --this.quantity;
       calculateTotal();
     }
+  }
+
+  void doStatusExtraOff(Extra extra) {
+    closedExtra(extra).then((value) {
+      setState(() {
+        extra.active = 0;
+      });
+    }).catchError((e) {
+      scaffoldKey?.currentState?.showSnackBar(SnackBar(
+        content: Text(e),
+      ));
+    }).whenComplete(() {
+      // refreshRestaurants();
+      scaffoldKey?.currentState?.showSnackBar(SnackBar(
+        content: Text('Extra agotado'),
+      ));
+    });
+  }
+
+  void doStatusExtraOn(Extra extra) {
+    openExtra(extra).then((value) {
+      setState(() {
+        extra.active = 1;
+      });
+    }).catchError((e) {
+      scaffoldKey?.currentState?.showSnackBar(SnackBar(
+        content: Text(e),
+      ));
+    }).whenComplete(() {
+      // refreshRestaurants();
+      scaffoldKey?.currentState?.showSnackBar(SnackBar(
+        content: Text('Extra disponible'),
+      ));
+    });
+  }
+
+  void listenForMarkets({String message}) async {
+    final Stream<Restaurant> stream = await getRestaurants();
+    stream.listen((Restaurant _restaurant) {
+      setState(() => restaurants.add(_restaurant));
+    }, onError: (a) {
+      scaffoldKey?.currentState?.showSnackBar(SnackBar(
+        content: Text(S.of(context).verify_your_internet_connection),
+      ));
+    }, onDone: () {
+      if (message != null) {
+        scaffoldKey?.currentState?.showSnackBar(SnackBar(
+          content: Text(message),
+        ));
+      }
+    });
+  }
+
+  void listenForCategories() async {
+    final Stream<Category> stream = await getCategories();
+    stream.listen((Category _category) {
+      setState(() => categories.add(_category));
+    }, onError: (a) {
+      print(a);
+    }, onDone: () {});
+  }
+
+  void doUpdateProduct(Food _food) async {
+    updateOrder(_food).then((value) {
+    }).catchError((e) {
+      Fluttertoast.showToast(
+        msg: "Ocurrio un error, vuelva a intentar guardar los cambios",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Colors.grey[900],
+        textColor: Colors.white,
+        fontSize: 16.0
+      );
+    }).whenComplete(() {
+      // refreshFood();
+      Navigator.of(context).pop();
+      Navigator.of(context).pop();
+      Navigator.of(context).pop();
+      Fluttertoast.showToast(
+        msg: "Producto actualizado exitosamente....",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Colors.grey[900],
+        textColor: Colors.white,
+        fontSize: 16.0
+      );
+    });
+  }
+
+  void doUpdateExtra(Extra _extra) async {
+    updateExtra(_extra).then((value) {
+      setState(() {
+        _extra.price = value.price;
+        _extra.name = value.name;
+      });
+    }).catchError((e) {
+      Fluttertoast.showToast(
+        msg: "Ocurrio un error, vuelva a intentar guardar los cambios",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Colors.grey[900],
+        textColor: Colors.white,
+        fontSize: 16.0
+      );
+    }).whenComplete(() {
+      // refreshFood();
+      Fluttertoast.showToast(
+        msg: "Extra actualizado exitosamente....",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Colors.grey[900],
+        textColor: Colors.white,
+        fontSize: 16.0
+      );
+    });
   }
 }

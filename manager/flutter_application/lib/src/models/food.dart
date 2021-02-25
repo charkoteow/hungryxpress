@@ -90,7 +90,13 @@ class Food {
     map["discountPrice"] = discountPrice;
     map["description"] = description;
     map["ingredients"] = ingredients;
-    map["weight"] = weight;
+    map["weight"] = weight.isEmpty ? null : weight;
+    map["unit"] = unit;
+    if (restaurant?.id != 'null') map["restaurant_id"] = restaurant?.id;
+    if (category?.id != 'null') map["category_id"] = category?.id;
+    map["featured"] = featured;
+    map["deliverable"] = deliverable;
+    map["package_items_count"] = packageItemsCount;
     return map;
   }
 

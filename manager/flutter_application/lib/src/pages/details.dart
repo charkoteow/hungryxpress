@@ -44,6 +44,22 @@ class _DetailsWidgetState extends StateMVC<DetailsWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _con.scaffoldKey,
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            Navigator.of(context).pushNamed('/Menu', arguments: new RouteArgument(id: widget.routeArgument.id));
+          },
+          isExtended: true,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          icon: Icon(
+            Icons.restaurant,
+            color: Theme.of(context).primaryColor,
+          ),
+          label: Text(
+            // S.of(context).menu,
+            'Menú',
+            style: TextStyle(color: Theme.of(context).primaryColor),
+          ),
+        ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         body: RefreshIndicator(
           onRefresh: _con.refreshRestaurant,

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery_owner/src/pages/food.dart';
+import 'package:food_delivery_owner/src/pages/menu_list.dart';
 
 import 'src/models/route_argument.dart';
 import 'src/pages/chat.dart';
@@ -38,6 +40,10 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => ChatWidget(routeArgument: args as RouteArgument));
       case '/Details':
         return MaterialPageRoute(builder: (_) => DetailsWidget(routeArgument: args));
+      case '/Menu':
+        return MaterialPageRoute(builder: (_) => MenuWidget(routeArgument: args as RouteArgument));
+      case '/Food':
+        return MaterialPageRoute(builder: (_) => FoodWidget(routeArgument: args as RouteArgument));
       case '/OrderDetails':
         return MaterialPageRoute(builder: (_) => OrderWidget(routeArgument: args as RouteArgument));
       case '/OrderEdit':

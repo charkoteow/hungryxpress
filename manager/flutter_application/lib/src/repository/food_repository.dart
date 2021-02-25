@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../helpers/custom_trace.dart';
 import '../helpers/helper.dart';
 import '../models/address.dart';
+import '../models/extra.dart';
 import '../models/favorite.dart';
 import '../models/filter.dart';
 import '../models/food.dart';
@@ -282,4 +283,67 @@ Future<Review> addFoodReview(Review review, Food food) async {
     print(CustomTrace(StackTrace.current, message: url).toString());
     return Review.fromJSON({});
   }
+}
+
+//Status Extras
+Future<Extra> closedExtra(Extra extra) async {
+  Uri uri = Helper.getUri('api/extras/${extra.id}');
+  User _user = userRepo.currentUser.value;
+  if (_user.apiToken == null) {
+    return new Extra();
+  }
+  Map<String, dynamic> _queryParams = {};
+  _queryParams['api_token'] = _user.apiToken;
+  uri = uri.replace(queryParameters: _queryParams);
+
+  //final String url = '${GlobalConfiguration().getString('api_base_url')}orders/${order.id}?$_apiToken';
+  final client = new http.Client();
+  final response = await client.put(
+    uri.toString(),
+    headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+    body: json.encode(extra.closedMap()),
+  );
+  return Extra.fromJSON(json.decode(response.body)['data']);
+}
+
+Future<Extra> openExtra(Extra extra) async {
+  Uri uri = Helper.getUri('api/extras/${extra.id}');
+  User _user = userRepo.currentUser.value;
+  if (_user.apiToken == null) {
+    return new Extra();
+  }
+  Map<String, dynamic> _queryParams = {};
+  _queryParams['api_token'] = _user.apiToken;
+  uri = uri.replace(queryParameters: _queryParams);
+
+  //final String url = '${GlobalConfiguration().getString('api_base_url')}orders/${order.id}?$_apiToken';
+  final client = new http.Client();
+  final response = await client.put(
+    uri.toString(),
+    headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+    body: json.encode(extra.openRestaurantMap()),
+  );
+  return Extra.fromJSON(json.decode(response.body)['data']);
+}
+//Status Extras
+
+//Update product
+Future<Food> updateOrder(Food food) async {
+  Uri uri = Helper.getUri('api/foods/${food.id}');
+  User _user = userRepo.currentUser.value;
+  if (_user.apiToken == null) {
+    return new Food();
+  }
+  Map<String, dynamic> _queryParams = {};
+  _queryParams['api_token'] = _user.apiToken;
+  uri = uri.replace(queryParameters: _queryParams);
+
+  //final String url = '${GlobalConfiguration().getString('api_base_url')}orders/${order.id}?$_apiToken';
+  final client = new http.Client();
+  final response = await client.put(
+    uri.toString(),
+    headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+    body: json.encode(food.toMap()),
+  );
+  return Food.fromJSON(json.decode(response.body)['data']);
 }

@@ -1,4 +1,5 @@
-import '../helpers/custom_trace.dart';
+import 'extra_group.dart';
+
 import '../models/media.dart';
 
 class Extra {
@@ -9,6 +10,8 @@ class Extra {
   Media image;
   String description;
   bool checked;
+  int active;
+  List<ExtraGroup> extraGroups;
 
   Extra();
 
@@ -20,6 +23,8 @@ class Extra {
       price = jsonMap['price'] != null ? jsonMap['price'].toDouble() : 0;
       description = jsonMap['description'];
       checked = false;
+      active = jsonMap['active'];
+      extraGroups = jsonMap['extra_group'] != null ? List.from(jsonMap['extra_group']).map((element) => ExtraGroup.fromJSON(element)).toList() : null;
       image = jsonMap['media'] != null && (jsonMap['media'] as List).length > 0 ? Media.fromJSON(jsonMap['media'][0]) : new Media();
     } catch (e) {
       id = '';
@@ -28,8 +33,10 @@ class Extra {
       price = 0.0;
       description = '';
       checked = false;
+      active = 0;
+      extraGroups = [];
       image = new Media();
-      print(CustomTrace(StackTrace.current, message: e));
+      print(e);
     }
   }
 
@@ -39,6 +46,20 @@ class Extra {
     map["name"] = name;
     map["price"] = price;
     map["description"] = description;
+    return map;
+  }
+
+  Map closedMap() {
+    var map = new Map<String, dynamic>();
+    map["id"] = id;
+    map["active"] = false;
+    return map;
+  }
+
+  Map openRestaurantMap() {
+    var map = new Map<String, dynamic>();
+    map["id"] = id;
+    map["active"] = true;
     return map;
   }
 
