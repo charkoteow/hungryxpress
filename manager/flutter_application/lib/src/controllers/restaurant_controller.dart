@@ -12,7 +12,6 @@ import '../pages/restaurants.dart';
 import '../repository/food_repository.dart';
 import '../repository/gallery_repository.dart';
 import '../repository/restaurant_repository.dart';
-import '../models/TypeStore.dart';
 
 class RestaurantController extends ControllerMVC {
   Restaurant restaurant;
@@ -20,7 +19,6 @@ class RestaurantController extends ControllerMVC {
   List<Restaurant> restaurants = <Restaurant>[];
   List<Food> foods = <Food>[];
   List<Cuisine> cuisines = <Cuisine>[];
-  List<TypeStore> typeStore = <TypeStore>[];
   List<Food> trendingFoods = <Food>[];
   List<Food> featuredFoods = <Food>[];
   List<Review> reviews = <Review>[];
