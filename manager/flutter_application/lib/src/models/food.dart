@@ -1,4 +1,3 @@
-import '../helpers/custom_trace.dart';
 import '../models/category.dart';
 import '../models/extra.dart';
 import '../models/extra_group.dart';
@@ -10,6 +9,7 @@ import '../models/review.dart';
 class Food {
   String id;
   String name;
+  int foodStatus;
   double price;
   double discountPrice;
   Media image;
@@ -33,22 +33,23 @@ class Food {
     try {
       id = jsonMap['id'].toString();
       name = jsonMap['name'];
+      foodStatus = jsonMap['food_status'];
       price = jsonMap['price'] != null ? jsonMap['price'].toDouble() : 0.0;
       discountPrice = jsonMap['discount_price'] != null ? jsonMap['discount_price'].toDouble() : 0.0;
       price = discountPrice != 0 ? discountPrice : price;
       discountPrice = discountPrice == 0 ? discountPrice : jsonMap['price'] != null ? jsonMap['price'].toDouble() : 0.0;
       description = jsonMap['description'];
       ingredients = jsonMap['ingredients'];
-      weight = jsonMap['weight'] != null ? jsonMap['weight'].toString() : '';
+      weight = jsonMap['weight'].toString();
       unit = jsonMap['unit'] != null ? jsonMap['unit'].toString() : '';
       packageItemsCount = jsonMap['package_items_count'].toString();
       featured = jsonMap['featured'] ?? false;
       deliverable = jsonMap['deliverable'] ?? false;
       restaurant = jsonMap['restaurant'] != null ? Restaurant.fromJSON(jsonMap['restaurant']) : Restaurant.fromJSON({});
-      category = jsonMap['category'] != null ? Category.fromJSON(jsonMap['category']) : Category.fromJSON({});
+      category = jsonMap['category'] != null ? Category.fromJSON(jsonMap['category']) : new Category();
       image = jsonMap['media'] != null && (jsonMap['media'] as List).length > 0 ? Media.fromJSON(jsonMap['media'][0]) : new Media();
-      extras = jsonMap['extras'] != null && (jsonMap['extras'] as List).length > 0
-          ? List.from(jsonMap['extras']).map((element) => Extra.fromJSON(element)).toSet().toList()
+      extras = jsonMap['extras_manager'] != null && (jsonMap['extras_manager'] as List).length > 0
+          ? List.from(jsonMap['extras_manager']).map((element) => Extra.fromJSON(element)).toSet().toList()
           : [];
       extraGroups = jsonMap['extra_groups'] != null && (jsonMap['extra_groups'] as List).length > 0
           ? List.from(jsonMap['extra_groups']).map((element) => ExtraGroup.fromJSON(element)).toSet().toList()
@@ -62,6 +63,7 @@ class Food {
     } catch (e) {
       id = '';
       name = '';
+      foodStatus = 0;
       price = 0.0;
       discountPrice = 0.0;
       description = '';
@@ -71,14 +73,14 @@ class Food {
       packageItemsCount = '';
       featured = false;
       deliverable = false;
-      restaurant = Restaurant.fromJSON({});
+      restaurant = new Restaurant.fromJSON({});
       category = Category.fromJSON({});
       image = new Media();
       extras = [];
       extraGroups = [];
       foodReviews = [];
       nutritions = [];
-      print(CustomTrace(StackTrace.current, message: e));
+      print(e);
     }
   }
 
@@ -86,6 +88,7 @@ class Food {
     var map = new Map<String, dynamic>();
     map["id"] = id;
     map["name"] = name;
+    map["food_status"] = foodStatus;
     map["price"] = price;
     map["discountPrice"] = discountPrice;
     map["description"] = description;
@@ -105,6 +108,20 @@ class Food {
     foodReviews.forEach((e) => _rate += double.parse(e.rate));
     _rate = _rate > 0 ? (_rate / foodReviews.length) : 0;
     return _rate;
+  }
+
+  Map closedMap() {
+    var map = new Map<String, dynamic>();
+    map["id"] = id;
+    map["food_status"] = false;
+    return map;
+  }
+
+  Map openRestaurantMap() {
+    var map = new Map<String, dynamic>();
+    map["id"] = id;
+    map["food_status"] = true;
+    return map;
   }
 
   @override

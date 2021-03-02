@@ -42,7 +42,7 @@ class ExtraItemWidget extends StatelessWidget {
                   children: <Widget>[
                     new Padding(
                       padding: const EdgeInsets.all(0),
-                      child: Text('Agotado', style: TextStyle(fontSize: 11, color: Colors.white),
+                      child: Text('Sold out', style: TextStyle(fontSize: 11, color: Colors.white),
                         ),
                       ),
                   ],

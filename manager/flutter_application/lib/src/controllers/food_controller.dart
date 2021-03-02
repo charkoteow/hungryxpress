@@ -133,7 +133,7 @@ class FoodController extends ControllerMVC {
     }).whenComplete(() {
       // refreshRestaurants();
       scaffoldKey?.currentState?.showSnackBar(SnackBar(
-        content: Text('Extra agotado'),
+        content: Text('Extra out of stock'),
       ));
     });
   }
@@ -150,7 +150,7 @@ class FoodController extends ControllerMVC {
     }).whenComplete(() {
       // refreshRestaurants();
       scaffoldKey?.currentState?.showSnackBar(SnackBar(
-        content: Text('Extra disponible'),
+        content: Text('Extra available'),
       ));
     });
   }
@@ -185,7 +185,7 @@ class FoodController extends ControllerMVC {
     updateOrder(_food).then((value) {
     }).catchError((e) {
       Fluttertoast.showToast(
-        msg: "Ocurrio un error, vuelva a intentar guardar los cambios",
+        msg: "An error occurred, retry to save changes",
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 3,
@@ -199,7 +199,7 @@ class FoodController extends ControllerMVC {
       Navigator.of(context).pop();
       Navigator.of(context).pop();
       Fluttertoast.showToast(
-        msg: "Producto actualizado exitosamente....",
+        msg: "Product updated successfully...",
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 3,
@@ -218,7 +218,7 @@ class FoodController extends ControllerMVC {
       });
     }).catchError((e) {
       Fluttertoast.showToast(
-        msg: "Ocurrio un error, vuelva a intentar guardar los cambios",
+        msg: "An error occurred, retry to save changes",
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 3,
@@ -229,7 +229,7 @@ class FoodController extends ControllerMVC {
     }).whenComplete(() {
       // refreshFood();
       Fluttertoast.showToast(
-        msg: "Extra actualizado exitosamente....",
+        msg: "Extra successfully updated...",
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 3,

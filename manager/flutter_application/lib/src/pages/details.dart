@@ -352,6 +352,9 @@ class _DetailsWidgetState extends StateMVC<DetailsWidget> {
                                     return FoodItemWidget(
                                       heroTag: 'details_featured_food',
                                       food: _con.featuredFoods.elementAt(index),
+                                      onAction: (value) {
+                                        _con.featuredFoods.elementAt(index).foodStatus == 1 ? _con.doStatusFoodOff(_con.featuredFoods.elementAt(index)) : _con.doStatusFoodOn(_con.featuredFoods.elementAt(index));
+                                      },
                                     );
                                   },
                                 ),

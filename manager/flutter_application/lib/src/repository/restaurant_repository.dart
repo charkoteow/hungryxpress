@@ -9,6 +9,7 @@ import '../helpers/custom_trace.dart';
 import '../helpers/helper.dart';
 import '../models/address.dart';
 import '../models/cuisine.dart';
+import '../models/food.dart';
 import '../models/filter.dart';
 import '../models/restaurant.dart';
 import '../models/review.dart';
@@ -198,6 +199,48 @@ Future<Restaurant> openRestaurant(Restaurant restaurant) async {
   );
   return Restaurant.fromJSON(json.decode(response.body)['data']);
 }
+
+//FoodStatus
+Future<Food> closedFood(Food food) async {
+  Uri uri = Helper.getUri('api/foods/${food.id}');
+  User _user = userRepo.currentUser.value;
+  if (_user.apiToken == null) {
+    return new Food();
+  }
+  Map<String, dynamic> _queryParams = {};
+  _queryParams['api_token'] = _user.apiToken;
+  uri = uri.replace(queryParameters: _queryParams);
+
+  //final String url = '${GlobalConfiguration().getString('api_base_url')}orders/${order.id}?$_apiToken';
+  final client = new http.Client();
+  final response = await client.put(
+    uri.toString(),
+    headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+    body: json.encode(food.closedMap()),
+  );
+  return Food.fromJSON(json.decode(response.body)['data']);
+}
+
+Future<Food> openFood(Food food) async {
+  Uri uri = Helper.getUri('api/foods/${food.id}');
+  User _user = userRepo.currentUser.value;
+  if (_user.apiToken == null) {
+    return new Food();
+  }
+  Map<String, dynamic> _queryParams = {};
+  _queryParams['api_token'] = _user.apiToken;
+  uri = uri.replace(queryParameters: _queryParams);
+
+  //final String url = '${GlobalConfiguration().getString('api_base_url')}orders/${order.id}?$_apiToken';
+  final client = new http.Client();
+  final response = await client.put(
+    uri.toString(),
+    headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+    body: json.encode(food.openRestaurantMap()),
+  );
+  return Food.fromJSON(json.decode(response.body)['data']);
+}
+//FoodStatus
 
 //Update store
 Future<Restaurant> updateMarket(Restaurant restaurant) async {

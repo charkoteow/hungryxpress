@@ -8,10 +8,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../helpers/custom_trace.dart';
 import '../helpers/helper.dart';
 import '../models/address.dart';
-import '../models/extra.dart';
 import '../models/favorite.dart';
 import '../models/filter.dart';
 import '../models/food.dart';
+import '../models/extra.dart';
 import '../models/review.dart';
 import '../models/user.dart';
 import '../repository/user_repository.dart' as userRepo;
@@ -48,7 +48,7 @@ Future<Stream<Food>> getTrendingFoods(Address address) async {
 
 Future<Stream<Food>> getFood(String foodId) async {
   Uri uri = Helper.getUri('api/foods/$foodId');
-  uri = uri.replace(queryParameters: {'with': 'restaurant;category;extras;extraGroups;foodReviews;foodReviews.user'});
+  uri = uri.replace(queryParameters: {'with': 'restaurant;category;extrasManager;extraGroups;foodReviews;foodReviews.user'});
   try {
     final client = new http.Client();
     final streamedRest = await client.send(http.Request('get', uri));
@@ -228,7 +228,7 @@ Future<Stream<Food>> getTrendingFoodsOfRestaurant(String restaurantId) async {
     'searchFields': 'restaurant_id:=;featured:=',
     'searchJoin': 'and',
   });
-  // TODO Trending foods only
+  // TODO Trending products only
   try {
     final client = new http.Client();
     final streamedRest = await client.send(http.Request('get', uri));
@@ -301,7 +301,7 @@ Future<Extra> closedExtra(Extra extra) async {
   final response = await client.put(
     uri.toString(),
     headers: {HttpHeaders.contentTypeHeader: 'application/json'},
-    body: json.encode(extra.closedMap()),
+    body: json.encode(extra.statusExtraOff()),
   );
   return Extra.fromJSON(json.decode(response.body)['data']);
 }
@@ -321,7 +321,7 @@ Future<Extra> openExtra(Extra extra) async {
   final response = await client.put(
     uri.toString(),
     headers: {HttpHeaders.contentTypeHeader: 'application/json'},
-    body: json.encode(extra.openRestaurantMap()),
+    body: json.encode(extra.statusExtraOn()),
   );
   return Extra.fromJSON(json.decode(response.body)['data']);
 }

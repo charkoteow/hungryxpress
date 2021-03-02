@@ -142,6 +142,40 @@ class RestaurantController extends ControllerMVC {
     listenForFoods(restaurant.id, categoriesId: categoriesId);
   }
 
+  void doStatusFoodOff(Food food) {
+    closedFood(food).then((value) {
+      setState(() {
+        food.foodStatus = 0;
+      });
+    }).catchError((e) {
+      scaffoldKey?.currentState?.showSnackBar(SnackBar(
+        content: Text(e),
+      ));
+    }).whenComplete(() {
+      // refreshRestaurants();
+      scaffoldKey?.currentState?.showSnackBar(SnackBar(
+        content: Text('Item Sold out'),
+      ));
+    });
+  }
+
+  void doStatusFoodOn(Food food) {
+    openFood(food).then((value) {
+      setState(() {
+        food.foodStatus = 1;
+      });
+    }).catchError((e) {
+      scaffoldKey?.currentState?.showSnackBar(SnackBar(
+        content: Text(e),
+      ));
+    }).whenComplete(() {
+      // refreshRestaurants();
+      scaffoldKey?.currentState?.showSnackBar(SnackBar(
+        content: Text('Product available'),
+      ));
+    });
+  }
+
   void doStatusStoreOff(Restaurant restaurant) {
     closedRestaurant(restaurant).then((value) {
       // setState(() {

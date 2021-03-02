@@ -41,11 +41,6 @@ class _FoodWidgetState extends StateMVC<FoodWidget> {
   @override
   void initState() {
     _con.listenForFood(foodId: widget.routeArgument.id);
-    _con.listenForFavorite(foodId: widget.routeArgument.id);
-
-    radioButtonsGroupValues = HashMap<String, String>();
-    radioButtonsExtraPrevValues = HashMap<String, Extra>();
-
     super.initState();
   }
 
@@ -210,7 +205,7 @@ class _FoodWidgetState extends StateMVC<FoodWidget> {
                                             tilePadding: EdgeInsets.symmetric(horizontal: 0),
                                             title: Text(extraGroup.name),
                                             subtitle: Text(
-                                              'Mantén presionado un extra para editar',
+                                              'hold an extra to edit',
                                               overflow: TextOverflow.ellipsis,
                                               style: Theme.of(context).textTheme.caption,
                                             ),

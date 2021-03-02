@@ -51,7 +51,7 @@ class _MenuWidgetState extends StateMVC<MenuWidget> {
         automaticallyImplyLeading: false,
         leading: new IconButton(
           icon: new Icon(Icons.arrow_back, color: Theme.of(context).hintColor),
-          onPressed: () => Navigator.of(context).pushNamed('/Details', arguments: RouteArgument(id: '0', param: _con.restaurant.id, heroTag: 'menu_tab')),
+          onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           _con.restaurant?.name ?? '',
@@ -150,22 +150,25 @@ class _MenuWidgetState extends StateMVC<MenuWidget> {
                     ),
                   ),
             _con.foods.isEmpty
-                ? CircularLoadingWidget(height: 250)
-                : ListView.separated(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    primary: false,
-                    itemCount: _con.foods.length,
-                    separatorBuilder: (context, index) {
-                      return SizedBox(height: 10);
+              ? CircularLoadingWidget(height: 250)
+              : ListView.separated(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                primary: false,
+                itemCount: _con.foods.length,
+                separatorBuilder: (context, index) {
+                  return SizedBox(height: 10);
+                },
+                itemBuilder: (context, index) {
+                  return FoodItemWidget(
+                    heroTag: 'menu_list',
+                    food: _con.foods.elementAt(index),
+                    onAction: (value) {
+                      _con.foods.elementAt(index).foodStatus == 0 ? _con.doStatusFoodOn(_con.foods.elementAt(index)) : _con.doStatusFoodOff(_con.foods.elementAt(index));
                     },
-                    itemBuilder: (context, index) {
-                      return FoodItemWidget(
-                        heroTag: 'menu_list',
-                        food: _con.foods.elementAt(index),
-                      );
-                    },
-                  ),
+                  );
+                },
+              )
           ],
         ),
       ),

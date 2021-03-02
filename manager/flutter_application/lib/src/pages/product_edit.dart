@@ -55,7 +55,7 @@ class _ProductEditWidgetState extends StateMVC<ProductEditWidget> {
               builder: (context) {
                 return AlertDialog(
                   title: Text(S.of(context).confirmation),
-                  content: Text("¿Realizaste correctamente los cambios?"),
+                  content: Text("Did you make the changes correctly?"),
                   actions: <Widget>[
                     // usually buttons at the bottom of the dialog
                     FlatButton(
@@ -94,7 +94,7 @@ class _ProductEditWidgetState extends StateMVC<ProductEditWidget> {
         ),
         centerTitle: true,
         title: Text(
-          'Editar Producto',
+          'Edit Product',
           style: Theme.of(context).textTheme.headline6.merge(TextStyle(letterSpacing: 1.3)),
         ),
         automaticallyImplyLeading: false,
@@ -119,12 +119,12 @@ class _ProductEditWidgetState extends StateMVC<ProductEditWidget> {
                   cursorColor: Theme.of(context).accentColor,
                   maxLines: 1,
                   decoration: InputDecoration(
-                    labelText: 'Nombre',
+                    labelText: 'Name',
                     labelStyle: Theme.of(context).textTheme.headline5,
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                     contentPadding: EdgeInsets.all(18),
                     hintStyle: Theme.of(context).textTheme.caption,
-                    hintText: 'Escriba el nombre de su producto',
+                    hintText: 'Enter the name of your branch',
                     border: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).focusColor.withOpacity(0.2))),
                     focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).focusColor.withOpacity(0.5))),
                     enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).focusColor.withOpacity(0.2))),
@@ -144,12 +144,12 @@ class _ProductEditWidgetState extends StateMVC<ProductEditWidget> {
                   controller: TextEditingController()..text = _con.food.price.toString(),
                   cursorColor: Theme.of(context).accentColor,
                   decoration: InputDecoration(
-                    labelText: 'Precio',
+                    labelText: 'Price',
                     labelStyle: Theme.of(context).textTheme.headline5,
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                     contentPadding: EdgeInsets.all(18),
                     hintStyle: Theme.of(context).textTheme.caption,
-                    hintText: 'Ingrese el precio del producto',
+                    hintText: 'Enter the price of the product',
                     border: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).focusColor.withOpacity(0.2))),
                     focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).focusColor.withOpacity(0.5))),
                     enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).focusColor.withOpacity(0.2))),
@@ -167,12 +167,12 @@ class _ProductEditWidgetState extends StateMVC<ProductEditWidget> {
                   controller: TextEditingController()..text = _con.food.discountPrice.toString(),
                   cursorColor: Theme.of(context).accentColor,
                   decoration: InputDecoration(
-                    labelText: 'Precio de descuento',
+                    labelText: 'Discount price',
                     labelStyle: Theme.of(context).textTheme.headline5,
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                     contentPadding: EdgeInsets.all(18),
                     hintStyle: Theme.of(context).textTheme.caption,
-                    hintText: 'Ingrese el precio de descuento del producto',
+                    hintText: 'Enter the discount price of the product',
                     border: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).focusColor.withOpacity(0.2))),
                     focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).focusColor.withOpacity(0.5))),
                     enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).focusColor.withOpacity(0.2))),
@@ -193,12 +193,12 @@ class _ProductEditWidgetState extends StateMVC<ProductEditWidget> {
                       controller: TextEditingController()..text = _con.food.weight == 'null' ? '' : _con.food.weight,
                       cursorColor: Theme.of(context).accentColor,
                       decoration: InputDecoration(
-                        labelText: 'Peso',
+                        labelText: 'Weight',
                         labelStyle: Theme.of(context).textTheme.headline5,
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                         contentPadding: EdgeInsets.all(18),
                         hintStyle: Theme.of(context).textTheme.caption,
-                        hintText: 'Ingrese el peso del producto',
+                        hintText: 'Enter product weight',
                         border: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).focusColor.withOpacity(0.2))),
                         focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).focusColor.withOpacity(0.5))),
                         enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).focusColor.withOpacity(0.2))),
@@ -216,12 +216,12 @@ class _ProductEditWidgetState extends StateMVC<ProductEditWidget> {
                       controller: TextEditingController()..text = _con.food.unit.isEmpty ? '' : _con.food.unit,
                       cursorColor: Theme.of(context).accentColor,
                       decoration: InputDecoration(
-                        labelText: 'Unidad',
+                        labelText: 'Unit',
                         labelStyle: Theme.of(context).textTheme.headline5,
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                         contentPadding: EdgeInsets.all(18),
                         hintStyle: Theme.of(context).textTheme.caption,
-                        hintText: 'Ingrese la unidad de medida',
+                        hintText: 'Enter the unit of measure',
                         border: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).focusColor.withOpacity(0.2))),
                         focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).focusColor.withOpacity(0.5))),
                         enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).focusColor.withOpacity(0.2))),
@@ -236,7 +236,7 @@ class _ProductEditWidgetState extends StateMVC<ProductEditWidget> {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.only(bottom: 10),
-                          child: Center(child: Text("Cantidad del paquete")),
+                          child: Center(child: Text("Package quantity")),
                         ),
                         Container(
                           width: 100,
@@ -270,12 +270,12 @@ class _ProductEditWidgetState extends StateMVC<ProductEditWidget> {
                   cursorColor: Theme.of(context).accentColor,
                   maxLines: 3,
                   decoration: InputDecoration(
-                    labelText: 'Descripción',
+                    labelText: 'Description',
                     labelStyle: Theme.of(context).textTheme.headline5,
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                     contentPadding: EdgeInsets.all(18),
                     hintStyle: Theme.of(context).textTheme.caption,
-                    hintText: 'Escriba una descripción de su producto',
+                    hintText: 'Write a description of your product',
                     border: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).focusColor.withOpacity(0.2))),
                     focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).focusColor.withOpacity(0.5))),
                     enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).focusColor.withOpacity(0.2))),
@@ -285,7 +285,7 @@ class _ProductEditWidgetState extends StateMVC<ProductEditWidget> {
               //Descripción
               ExpansionTile(
                 tilePadding: EdgeInsets.symmetric(horizontal: 20),
-                title: Text('Tienda o Restaurante'),
+                title: Text('Store or Restaurant'),
                 initiallyExpanded: false,
                 children: List.generate(_con.restaurants.length, (index) {
                   var _restaurants = _con.restaurants.elementAt(index);
@@ -312,7 +312,7 @@ class _ProductEditWidgetState extends StateMVC<ProductEditWidget> {
               //Categoria App
               ExpansionTile(
                 tilePadding: EdgeInsets.symmetric(horizontal: 20),
-                title: Text('Categoría de la app'),
+                title: Text('Category'),
                 initiallyExpanded: false,
                 children: List.generate(_con.categories.length, (index) {
                   var _categories = _con.categories.elementAt(index);
@@ -345,7 +345,7 @@ class _ProductEditWidgetState extends StateMVC<ProductEditWidget> {
                     height: 60.0,
                     child: CheckboxListTile(
                       title: Text(
-                        'Destacado',
+                        'Featured',
                         style: TextStyle(fontSize: 14),
                       ),
                       value: _con.food.featured,
@@ -362,7 +362,7 @@ class _ProductEditWidgetState extends StateMVC<ProductEditWidget> {
                     height: 60.0,
                     child: CheckboxListTile(
                       title: Text(
-                        'Disponible para envíar',
+                        'Available to ship',
                         style: TextStyle(fontSize: 14),
                       ),
                       value: _con.food.deliverable,

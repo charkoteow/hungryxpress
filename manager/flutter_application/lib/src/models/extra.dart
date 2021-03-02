@@ -1,4 +1,4 @@
-import 'extra_group.dart';
+import '../models/extra_group.dart';
 
 import '../models/media.dart';
 
@@ -49,14 +49,14 @@ class Extra {
     return map;
   }
 
-  Map closedMap() {
+  Map statusExtraOff() {
     var map = new Map<String, dynamic>();
     map["id"] = id;
     map["active"] = false;
     return map;
   }
 
-  Map openRestaurantMap() {
+  Map statusExtraOn() {
     var map = new Map<String, dynamic>();
     map["id"] = id;
     map["active"] = true;
