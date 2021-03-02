@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
+import 'dart:math' as Math;
 
 import '../../generated/l10n.dart';
 import '../helpers/helper.dart';
@@ -9,6 +10,8 @@ import '../repository/cart_repository.dart';
 import '../repository/coupon_repository.dart';
 import '../repository/settings_repository.dart';
 import '../repository/user_repository.dart';
+import '../models/address.dart';
+import '../repository/settings_repository.dart' as settingRepo;
 
 class CartController extends ControllerMVC {
   List<Cart> carts = <Cart>[];
@@ -17,6 +20,23 @@ class CartController extends ControllerMVC {
   int cartCount = 0;
   double subTotal = 0.0;
   double total = 0.0;
+
+  Address currentAddress;
+  double currentFee = 0.0;
+  double degtorad = 0.0;
+  double radtodeg = 0.0;
+  double dlong = 0.0;
+  double dvalue = 0.0;
+  double dd = 0.0;
+  double miles = 0.0;
+  double km = 0.0;
+  double lat1 = 0.0;
+  double long1 = 0.0;
+  double lat2 = 0.0;
+  double long2 = 0.0;
+  double deliveryFeeCalculate = 0.0;
+  double valueNew = 0.0;
+  double distanceResponse = 0.0;
   GlobalKey<ScaffoldState> scaffoldKey;
 
   CartController() {
@@ -98,11 +118,89 @@ class CartController extends ControllerMVC {
       subTotal += cartPrice;
     });
     if (Helper.canDelivery(carts[0].food.restaurant, carts: carts)) {
-      deliveryFee = carts[0].food.restaurant.deliveryFee;
+      // deliveryFee = carts[0].food.restaurant.deliveryFee;
+      calculateDeliveryFee();
     }
     taxAmount = (subTotal + deliveryFee) * carts[0].food.restaurant.defaultTax / 100;
     total = subTotal + taxAmount + deliveryFee;
     setState(() {});
+  }
+
+  void calculateDeliveryFee() {
+    currentAddress = settingRepo.deliveryAddress.value;
+    if (currentAddress.isUnknown()) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: new Text(
+              'Dirección de envío desconocida',
+              style: Theme.of(context).textTheme.body2,
+            ),
+            content: new Text(
+              'Por favor, permita la ubicación y agregue una dirección de envío válida',
+            ),
+            actions: <Widget>[
+              MaterialButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.of(context).pushNamed('/DeliveryAddresses');
+                },
+                child: Text(S.of(context).cancel),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      //Coordenadas Cliente
+      lat1 = currentAddress.latitude;
+      long1 = currentAddress.longitude;
+
+      //Coordenadas Tienda
+      lat2 = double.parse(carts[0].food.restaurant.latitude);
+      long2 = double.parse(carts[0].food.restaurant.longitude);
+
+      degtorad = 0.01745329;
+      radtodeg = 57.29577951;
+
+      dlong = (long1 - long2);
+      dvalue = (Math.sin(lat1 * degtorad) * Math.sin(lat2 * degtorad)) +
+          (Math.cos(lat1 * degtorad) *
+              Math.cos(lat2 * degtorad) *
+              Math.cos(dlong * degtorad));
+
+      dd = Math.acos(dvalue) * radtodeg;
+
+      miles = (dd * 69.16);
+      km = (dd * 111.302);
+      valueNew = double.parse(km.toStringAsFixed(2));
+
+      if (valueNew <= 4) {
+        deliveryFeeCalculate = carts[0].food.restaurant.deliveryFee;
+      } else if (valueNew > 4 && valueNew <= 5) {
+        deliveryFeeCalculate = carts[0].food.restaurant.deliveryFee + 5;
+      } else if (valueNew > 5 && valueNew <= 6) {
+        deliveryFeeCalculate = carts[0].food.restaurant.deliveryFee + 10;
+      } else if (valueNew > 6 && valueNew <= 7) {
+        deliveryFeeCalculate = carts[0].food.restaurant.deliveryFee + 15;
+      } else if (valueNew > 7 && valueNew <= 8) {
+        deliveryFeeCalculate = carts[0].food.restaurant.deliveryFee + 20;
+      } else if (valueNew > 8 && valueNew <= 9) {
+        deliveryFeeCalculate = carts[0].food.restaurant.deliveryFee + 25;
+      } else if (valueNew > 9 && valueNew <= 10) {
+        deliveryFeeCalculate = carts[0].food.restaurant.deliveryFee + 30;
+      } else if (valueNew > 10 && valueNew <= 11) {
+        deliveryFeeCalculate = carts[0].food.restaurant.deliveryFee + 35;
+      } else if (valueNew > 11 && valueNew <= 12) {
+        deliveryFeeCalculate = carts[0].food.restaurant.deliveryFee + 40;
+      } else if (valueNew > 12 && valueNew <= 13) {
+        deliveryFeeCalculate = carts[0].food.restaurant.deliveryFee + 45;
+      } else if (valueNew > 13) {
+        deliveryFeeCalculate = carts[0].food.restaurant.deliveryFee + 50;
+      }
+      deliveryFee = deliveryFeeCalculate;
+    }
   }
 
   void doApplyCoupon(String code, {String message}) async {

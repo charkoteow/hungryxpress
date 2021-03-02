@@ -108,7 +108,7 @@ class _MessageItemWidgetState extends State<MessageItemWidget> {
                           ),
                         ),
                         Text(
-                          DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(this.widget.message.lastMessageTime, isUtc: true)),
+                          DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(this.widget.message.lastMessageTime, isUtc: false)),
                           overflow: TextOverflow.fade,
                           softWrap: false,
                           style: Theme.of(context).textTheme.bodyText2,
@@ -128,7 +128,7 @@ class _MessageItemWidgetState extends State<MessageItemWidget> {
                           ),
                         ),
                         Text(
-                          DateFormat('dd-MM-yyyy').format(DateTime.fromMillisecondsSinceEpoch(this.widget.message.lastMessageTime, isUtc: true)),
+                          DateFormat('dd-MM-yyyy').format(DateTime.fromMillisecondsSinceEpoch(this.widget.message.lastMessageTime, isUtc: false)),
                           overflow: TextOverflow.fade,
                           softWrap: false,
                           style: Theme.of(context).textTheme.bodyText2,

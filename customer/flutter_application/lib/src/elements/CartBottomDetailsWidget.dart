@@ -51,7 +51,7 @@ class CartBottomDetailsWidget extends StatelessWidget {
                         ),
                       ),
                       if (Helper.canDelivery(_con.carts[0].food.restaurant, carts: _con.carts))
-                        Helper.getPrice(_con.carts[0].food.restaurant.deliveryFee, context,
+                        Helper.getPrice(_con.deliveryFee, context,
                             style: Theme.of(context).textTheme.subtitle1, zeroPlaceholder: 'Free')
                       else
                         Helper.getPrice(0, context, style: Theme.of(context).textTheme.subtitle1, zeroPlaceholder: 'Free')

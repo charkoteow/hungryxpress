@@ -1,34 +1,63 @@
 {
   "project_info": {
-    "project_number": "712666927026",
-    "firebase_url": "https://fooddeliver192.firebaseio.com",
-    "project_id": "fooddeliver192",
-    "storage_bucket": "fooddeliver192.appspot.com"
+    "project_number": "816731176234",
+    "firebase_url": "https://hungryxpress-9afbd-default-rtdb.firebaseio.com",
+    "project_id": "hungryxpress-9afbd",
+    "storage_bucket": "hungryxpress-9afbd.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:712666927026:android:3df2b8eb7bb9b9df96deab",
+        "mobilesdk_app_id": "1:816731176234:android:8d68b2e1b5878513ddb253",
         "android_client_info": {
-          "package_name": "com.smartersvision.food_delivery_app"
+          "package_name": "co.ideria.hungryxpress"
         }
       },
       "oauth_client": [
         {
-          "client_id": "712666927026-tiebtpficqog3dhskbnsgl77291t8t6e.apps.googleusercontent.com",
+          "client_id": "816731176234-dp1pchs196887l6ojnj42h9enqnl8p47.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBCOwMtkYXmDXtI5UkKmNoLQRHd1BUHF5M"
+          "current_key": "AIzaSyDm3VUnOaktWAc0IktYPVAAuqCEfcZVCWo"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "712666927026-tiebtpficqog3dhskbnsgl77291t8t6e.apps.googleusercontent.com",
+              "client_id": "816731176234-dp1pchs196887l6ojnj42h9enqnl8p47.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:816731176234:android:8cc7013bc297339fddb253",
+        "android_client_info": {
+          "package_name": "hungryxpress.manager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "816731176234-dp1pchs196887l6ojnj42h9enqnl8p47.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDm3VUnOaktWAc0IktYPVAAuqCEfcZVCWo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "816731176234-dp1pchs196887l6ojnj42h9enqnl8p47.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

@@ -2,7 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:intl/intl.dart' show DateFormat;
 
 import '../../generated/l10n.dart';
 import '../controllers/restaurant_controller.dart';
@@ -46,6 +48,149 @@ class _RestaurantWidgetState extends StateMVC<RestaurantWidget> {
     super.initState();
   }
 
+  getStatusRestaurantPhoto() {
+    if (_con.restaurant.closed){
+      return CachedNetworkImage(
+        fit: BoxFit.cover,
+        imageUrl: _con.restaurant.image.url,
+        placeholder: (context, url) => Image.asset(
+          'assets/img/loading.gif',
+          fit: BoxFit.cover,
+        ),
+        errorWidget: (context, url, error) => Icon(Icons.error),
+        imageBuilder: (context, imageProvider) => new Container (
+          height: 60,
+          width: 60,
+          child : new Padding(
+            padding: const EdgeInsets.only(bottom: 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                new Container(
+                  margin: const EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.all(5.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(5.0)
+                    ),
+                  ),
+                  child: Text(
+                    S.of(context).closed,
+                    style: TextStyle(fontSize: 14, color: Colors.grey[800]),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          decoration: BoxDecoration(
+            color: const Color(0xff000000),
+            image: DecorationImage(
+              image: imageProvider,
+              fit: BoxFit.cover,
+              colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop),
+            ),
+          ),
+        ),
+      );
+    } else {
+      if (_con.restaurant.currentOpenRestaurant()) {
+        return CachedNetworkImage(
+          fit: BoxFit.cover,
+          imageUrl: _con.restaurant.image.url,
+          placeholder: (context, url) => Image.asset(
+            'assets/img/loading.gif',
+            fit: BoxFit.cover,
+          ),
+          errorWidget: (context, url, error) => Icon(Icons.error),
+        );
+      } else {
+        return CachedNetworkImage(
+          fit: BoxFit.cover,
+          imageUrl: _con.restaurant.image.url,
+          placeholder: (context, url) => Image.asset(
+            'assets/img/loading.gif',
+            fit: BoxFit.cover,
+          ),
+          errorWidget: (context, url, error) => Icon(Icons.error),
+          imageBuilder: (context, imageProvider) => new Container (
+            height: 60,
+            width: 60,
+            child : new Padding(
+              padding: const EdgeInsets.only(bottom: 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  new Container(
+                    margin: const EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.all(5.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(5.0)
+                      ),
+                    ),
+                    child: Text(
+                      S.of(context).closed,
+                      style: TextStyle(fontSize: 14, color: Colors.grey[800])
+                      ,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            decoration: BoxDecoration(
+              color: const Color(0xff000000),
+              image: DecorationImage(
+                image: imageProvider,
+                fit: BoxFit.cover,
+                colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop),
+              ),
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  getStatusRestaurantBadge() {
+    if (_con.restaurant.closed){
+      return Container(
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+        decoration:
+            BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.circular(24)),
+        child: Text(
+          S.of(context).closed,
+          style: Theme.of(context).textTheme.caption.merge(TextStyle(color: Theme.of(context).primaryColor)),
+        ),
+      );
+    } else {
+      if (_con.restaurant.currentOpenRestaurant()) {
+        return Container(
+          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+          decoration:
+              BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(24)),
+          child: Text(
+            S.of(context).open,
+            style: Theme.of(context).textTheme.caption.merge(TextStyle(color: Theme.of(context).primaryColor)),
+          ),
+        );
+      } else {
+        return Container(
+          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+          decoration:
+              BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.circular(24)),
+          child: Text(
+            S.of(context).closed,
+            style: Theme.of(context).textTheme.caption.merge(TextStyle(color: Theme.of(context).primaryColor)),
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,24 +210,29 @@ class _RestaurantWidgetState extends StateMVC<RestaurantWidget> {
                           backgroundColor: Theme.of(context).accentColor.withOpacity(0.9),
                           expandedHeight: 300,
                           elevation: 0,
-//                          iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
-                          automaticallyImplyLeading: false,
-                          leading: new IconButton(
-                            icon: new Icon(Icons.sort, color: Theme.of(context).primaryColor),
-                            onPressed: () => widget.parentScaffoldKey.currentState.openDrawer(),
-                          ),
+                          iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
                           flexibleSpace: FlexibleSpaceBar(
                             collapseMode: CollapseMode.parallax,
-                            background: Hero(
-                              tag: (widget?.routeArgument?.heroTag ?? '') + _con.restaurant.id,
-                              child: CachedNetworkImage(
-                                fit: BoxFit.cover,
-                                imageUrl: _con.restaurant.image.url,
-                                placeholder: (context, url) => Image.asset(
-                                  'assets/img/loading.gif',
-                                  fit: BoxFit.cover,
+                            background: GestureDetector(
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (_) {
+                                  return DetailScreen(heroTag: widget?.routeArgument?.heroTag ?? '', image: _con.restaurant.image.url);
+                                  }
+                                ));
+                              },
+                              child: Hero(
+                                tag: (widget?.routeArgument?.heroTag ?? '') + _con.restaurant.id,
+                                child: Stack(
+                                  fit: StackFit.expand,
+                                  children: <Widget>[
+                                        Container(
+                                          width: double.infinity,
+                                          child: ClipRRect(
+                                            child: getStatusRestaurantPhoto(),
+                                          ),
+                                    ),
+                                  ],
                                 ),
-                                errorWidget: (context, url, error) => Icon(Icons.error),
                               ),
                             ),
                           ),
@@ -130,20 +280,7 @@ class _RestaurantWidgetState extends StateMVC<RestaurantWidget> {
                               Row(
                                 children: <Widget>[
                                   SizedBox(width: 20),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
-                                    decoration:
-                                        BoxDecoration(color: _con.restaurant.closed ? Colors.grey : Colors.green, borderRadius: BorderRadius.circular(24)),
-                                    child: _con.restaurant.closed
-                                        ? Text(
-                                            S.of(context).closed,
-                                            style: Theme.of(context).textTheme.caption.merge(TextStyle(color: Theme.of(context).primaryColor)),
-                                          )
-                                        : Text(
-                                            S.of(context).open,
-                                            style: Theme.of(context).textTheme.caption.merge(TextStyle(color: Theme.of(context).primaryColor)),
-                                          ),
-                                  ),
+                                  getStatusRestaurantBadge(),
                                   SizedBox(width: 10),
                                   Expanded(child: SizedBox(height: 0)),
                                   Container(
@@ -181,6 +318,57 @@ class _RestaurantWidgetState extends StateMVC<RestaurantWidget> {
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                                 child: Helper.applyHtml(context, _con.restaurant.information),
+                              ),
+                              if (_con.restaurant.openRestaurants.length > 0)
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 20),
+                                child: ListTile(
+                                  dense: true,
+                                  contentPadding: EdgeInsets.symmetric(vertical: 0),
+                                  leading: Icon(
+                                    Icons.lock_clock,
+                                    color: Theme.of(context).hintColor,
+                                  ),
+                                  title: Text(
+                                    'Hours of Operation',
+                                    style: Theme.of(context).textTheme.headline4,
+                                  ),
+                                ),
+                              ),
+                              if (_con.restaurant.openRestaurants.length > 0)
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                                margin: const EdgeInsets.symmetric(vertical: 5),
+                                color: Theme.of(context).primaryColor,
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  primary: false,
+                                  itemCount: _con.restaurant.openRestaurants.length,
+                                  itemBuilder: (context, index) {
+                                    DateTime date = DateTime.now();
+                                    return Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Text(
+                                            Helper.dayOfWeekHours(_con.restaurant.openRestaurants.elementAt(index).day_of_week),
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 2,
+                                            style: _con.restaurant.openRestaurants.elementAt(index).day_of_week == date.weekday ? Theme.of(context).textTheme.headline3.merge(TextStyle(fontSize: 13)) : Theme.of(context).textTheme.caption.merge(TextStyle(fontSize: 13)),
+                                          ),
+                                        ),
+                                        SizedBox(width: 10),
+                                        Text(
+                                          DateFormat('HH:mm').format(_con.restaurant.openRestaurants.elementAt(index).open_time)+' - '+DateFormat('HH:mm').format(_con.restaurant.openRestaurants.elementAt(index).close_time),
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                          style: _con.restaurant.openRestaurants.elementAt(index).day_of_week == date.weekday ? Theme.of(context).textTheme.headline3.merge(TextStyle(fontSize: 13)) : Theme.of(context).textTheme.caption.merge(TextStyle(fontSize: 13)),
+                                        ),
+                                        SizedBox(height: 8),
+                                      ]
+                                    );
+                                  },
+                                ),
                               ),
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -376,5 +564,36 @@ class _RestaurantWidgetState extends StateMVC<RestaurantWidget> {
                   ],
                 ),
         ));
+  }
+}
+
+class DetailScreen extends StatefulWidget {
+  final String image;
+  final String heroTag;
+
+  const DetailScreen ({Key key, this.image, this.heroTag}) : super(key: key);
+
+  @override
+  _DetailScreenWidgetState createState() => _DetailScreenWidgetState();
+  
+  }
+  class _DetailScreenWidgetState extends State<DetailScreen>{
+    @override
+    Widget build(BuildContext context) {
+    return Scaffold(
+        body: Center(
+          child: GestureDetector(
+            child: Hero(
+                tag: widget.heroTag,
+                child: PhotoView(
+                  imageProvider: CachedNetworkImageProvider(widget.image),
+                  // Contained = the smallest possible size to fit one dimension of the screen
+                  minScale: PhotoViewComputedScale.contained * 0.8,
+                  // Covered = the smallest possible size to fit the whole screen
+                  maxScale: PhotoViewComputedScale.covered * 2,
+                )),
+          ),
+        )
+    );
   }
 }

@@ -1,5 +1,6 @@
 import '../helpers/custom_trace.dart';
 import '../models/media.dart';
+import 'open_restaurant.dart';
 import 'user.dart';
 
 class Restaurant {
@@ -22,6 +23,7 @@ class Restaurant {
   double deliveryRange;
   double distance;
   List<User> users;
+  List<OpenRestaurant> openRestaurants;
 
   Restaurant();
 
@@ -48,6 +50,18 @@ class Restaurant {
       users = jsonMap['users'] != null && (jsonMap['users'] as List).length > 0
           ? List.from(jsonMap['users']).map((element) => User.fromJSON(element)).toSet().toList()
           : [];
+      openRestaurants = jsonMap['open_restaurants'] != null &&
+              (jsonMap['open_restaurants'] as List).length > 0
+          ? List.from(jsonMap['open_restaurants'])
+              .map((element) => OpenRestaurant.fromJSON(element))
+              .toSet()
+              .toList()
+          : [];
+      if (openRestaurants.length > 0) {
+        print(openRestaurants[0].day_of_week);
+        print(openRestaurants[0].open_time);
+        print(openRestaurants[0].close_time);
+      }
     } catch (e) {
       id = '';
       name = '';
@@ -68,6 +82,7 @@ class Restaurant {
       availableForDelivery = false;
       distance = 0.0;
       users = [];
+      openRestaurants = [];
       print(CustomTrace(StackTrace.current, message: e));
     }
   }
@@ -82,4 +97,33 @@ class Restaurant {
       'distance': distance,
     };
   }
+
+  bool currentOpenRestaurant() {
+    DateTime currentDate = DateTime.now();
+    final index = this.openRestaurants.indexWhere((openRestaurant) =>
+        openRestaurant.day_of_week == DateTime.now().weekday &&
+        currentDate.isAfter(DateTime(
+            currentDate.year,
+            currentDate.month,
+            currentDate.day,
+            openRestaurant.open_time.hour,
+            openRestaurant.open_time.minute,
+            openRestaurant.open_time.second,
+            openRestaurant.open_time.millisecond)) &&
+        currentDate.isBefore(DateTime(
+            currentDate.year,
+            currentDate.month,
+            currentDate.day,
+            openRestaurant.close_time.hour,
+            openRestaurant.close_time.minute,
+            openRestaurant.close_time.second,
+            openRestaurant.close_time.millisecond)));
+
+    if (index >= 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
 }
