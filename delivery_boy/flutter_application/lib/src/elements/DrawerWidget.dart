@@ -94,6 +94,19 @@ class _DrawerWidgetState extends StateMVC<DrawerWidget> {
                   ),
                 ),
                 ListTile(
+                  onTap: () {
+                    Navigator.of(context).pushNamed('/Pages', arguments: 4);
+                  },
+                  leading: Icon(
+                    Icons.chat,
+                    color: Theme.of(context).focusColor.withOpacity(1),
+                  ),
+                  title: Text(
+                    'Messages',
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ),
+                ),
+                ListTile(
                   dense: true,
                   title: Text(
                     S.of(context).application_preferences,

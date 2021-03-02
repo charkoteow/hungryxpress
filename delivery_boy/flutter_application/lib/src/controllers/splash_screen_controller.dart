@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,7 @@ class SplashScreenController extends ControllerMVC with ChangeNotifier {
   @override
   void initState() {
     super.initState();
+    Firebase.initializeApp();
     firebaseMessaging.requestNotificationPermissions(const IosNotificationSettings(sound: true, badge: true, alert: true));
     configureFirebase(firebaseMessaging);
     settingRepo.setting.addListener(() {
@@ -63,7 +65,9 @@ class SplashScreenController extends ControllerMVC with ChangeNotifier {
     print(CustomTrace(StackTrace.current, message: message['data']['id']));
     try {
       if (message['data']['id'] == "orders") {
-        settingRepo.navigatorKey.currentState.pushReplacementNamed('/Pages', arguments: 1);
+        settingRepo.navigatorKey.currentState.pushReplacementNamed('/Pages', arguments: 2);
+      } else if (message['data']['id'] == "messages") {
+        settingRepo.navigatorKey.currentState.pushReplacementNamed('/Pages', arguments: 4);
       }
     } catch (e) {
       print(CustomTrace(StackTrace.current, message: e));
@@ -74,9 +78,11 @@ class SplashScreenController extends ControllerMVC with ChangeNotifier {
     String messageId = await settingRepo.getMessageId();
     try {
       if (messageId != message['google.message_id']) {
+        await settingRepo.saveMessageId(message['google.message_id']);
         if (message['data']['id'] == "orders") {
-          await settingRepo.saveMessageId(message['google.message_id']);
-          settingRepo.navigatorKey.currentState.pushReplacementNamed('/Pages', arguments: 1);
+          settingRepo.navigatorKey.currentState.pushReplacementNamed('/Pages', arguments: 2);
+        } else if (message['data']['id'] == "messages") {
+          settingRepo.navigatorKey.currentState.pushReplacementNamed('/Pages', arguments: 4);
         }
       }
     } catch (e) {
@@ -89,7 +95,7 @@ class SplashScreenController extends ControllerMVC with ChangeNotifier {
       msg: message['notification']['title'],
       toastLength: Toast.LENGTH_LONG,
       gravity: ToastGravity.TOP,
-      timeInSecForIosWeb: 5,
+      timeInSecForIosWeb: 6,
     );
   }
 }

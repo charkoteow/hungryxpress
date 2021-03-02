@@ -19,6 +19,8 @@ class Setting {
   String scaffoldDarkColor;
   String scaffoldColor;
   String googleMapsKey;
+  String fcmKey;
+  bool chatClientEnabled = true;
   ValueNotifier<Locale> mobileLanguage = new ValueNotifier(Locale('en', ''));
   String appVersion;
   bool enableVersion = true;
@@ -39,6 +41,8 @@ class Setting {
       scaffoldDarkColor = jsonMap['scaffold_dark_color'] ?? '';
       scaffoldColor = jsonMap['scaffold_color'] ?? '';
       googleMapsKey = jsonMap['google_maps_key'] ?? null;
+      fcmKey = jsonMap['fcm_key'] ?? null;
+      chatClientEnabled = jsonMap['enable_chat'] == null || jsonMap['enable_chat'] == '0' ? false : true;
       mobileLanguage.value = Locale(jsonMap['mobile_language'] ?? "en", '');
       appVersion = jsonMap['app_version'] ?? '';
       distanceUnit = jsonMap['distance_unit'] ?? 'km';
@@ -61,6 +65,7 @@ class Setting {
     map["currency_right"] = currencyRight;
     map["enable_paypal"] = payPalEnabled;
     map["enable_stripe"] = stripeEnabled;
+    map["enable_chat"] = chatClientEnabled;
     map["mobile_language"] = mobileLanguage.value.languageCode;
     return map;
   }

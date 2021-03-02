@@ -1,5 +1,8 @@
-import '../helpers/custom_trace.dart';
+import 'dart:io';
+
 import '../models/media.dart';
+
+enum UserState { available, away, busy }
 
 class User {
   String id;
@@ -11,6 +14,7 @@ class User {
   String phone;
   String address;
   String bio;
+  bool receiveEmail;
   Media image;
 
   // used for indicate if client logged in or not
@@ -27,6 +31,7 @@ class User {
       email = jsonMap['email'] != null ? jsonMap['email'] : '';
       apiToken = jsonMap['api_token'];
       deviceToken = jsonMap['device_token'];
+      receiveEmail = jsonMap['receive_emails'] ?? false;
       try {
         phone = jsonMap['custom_fields']['phone']['view'];
       } catch (e) {
@@ -44,7 +49,7 @@ class User {
       }
       image = jsonMap['media'] != null && (jsonMap['media'] as List).length > 0 ? Media.fromJSON(jsonMap['media'][0]) : new Media();
     } catch (e) {
-      print(CustomTrace(StackTrace.current, message: e));
+      print(e);
     }
   }
 
@@ -58,10 +63,21 @@ class User {
     if (deviceToken != null) {
       map["device_token"] = deviceToken;
     }
+    map["receive_emails"] = receiveEmail;
+    map["device_os"] = Platform.isIOS ? 'iOS' : 'Android';
     map["phone"] = phone;
     map["address"] = address;
     map["bio"] = bio;
     map["media"] = image?.toMap();
+    return map;
+  }
+
+  Map toRestrictMap() {
+    var map = new Map<String, dynamic>();
+    map["id"] = id;
+    map["email"] = email;
+    map["name"] = name;
+    map["thumb"] = image?.thumb;
     return map;
   }
 
@@ -70,9 +86,5 @@ class User {
     var map = this.toMap();
     map["auth"] = this.auth;
     return map.toString();
-  }
-
-  bool profileCompleted() {
-    return address != null && address != '' && phone != null && phone != '';
   }
 }

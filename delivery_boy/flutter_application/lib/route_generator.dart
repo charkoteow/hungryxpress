@@ -11,6 +11,7 @@ import 'src/pages/pages.dart';
 import 'src/pages/settings.dart';
 import 'src/pages/signup.dart';
 import 'src/pages/splash_screen.dart';
+import 'src/pages/chat.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -31,6 +32,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => ForgetPasswordWidget());
       case '/Pages':
         return MaterialPageRoute(builder: (_) => PagesTestWidget(currentTab: args));
+      case '/Chat':
+        return MaterialPageRoute(builder: (_) => ChatWidget(routeArgument: args as RouteArgument));
       case '/OrderDetails':
         return MaterialPageRoute(builder: (_) => OrderWidget(routeArgument: args as RouteArgument));
       case '/Notifications':

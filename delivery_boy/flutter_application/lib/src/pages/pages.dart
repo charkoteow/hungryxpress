@@ -5,10 +5,13 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../../generated/l10n.dart';
 import '../elements/DrawerWidget.dart';
 import '../models/route_argument.dart';
-import '../pages/map.dart';
 import '../pages/orders.dart';
 import '../pages/orders_history.dart';
 import '../pages/profile.dart';
+import '../pages/messages.dart';
+import '../pages/settings.dart';
+import '../pages/notifications.dart';
+import '../repository/settings_repository.dart' as settingsRepo;
 
 // ignore: must_be_immutable
 class PagesTestWidget extends StatefulWidget {
@@ -28,7 +31,7 @@ class PagesTestWidget extends StatefulWidget {
         currentTab = int.parse(currentTab.id);
       }
     } else {
-      currentTab = 1;
+      currentTab = 2;
     }
   }
 
@@ -52,22 +55,43 @@ class _PagesTestWidgetState extends State<PagesTestWidget> {
 
   void _selectTab(int tabItem) {
     setState(() {
-      widget.currentTab = tabItem == 3 ? 1 : tabItem;
+      widget.currentTab = tabItem; // == 3 ? 1 : tabItem;
       switch (tabItem) {
         case 0:
           widget.currentPage = ProfileWidget(parentScaffoldKey: widget.scaffoldKey);
           break;
         case 1:
-          widget.currentPage = OrdersWidget(parentScaffoldKey: widget.scaffoldKey);
+          widget.currentPage = NotificationsWidget(parentScaffoldKey: widget.scaffoldKey);
           break;
         case 2:
-          widget.currentPage = OrdersHistoryWidget(parentScaffoldKey: widget.scaffoldKey);
+          widget.currentPage = OrdersWidget(parentScaffoldKey: widget.scaffoldKey);
           break;
         case 3:
-          widget.currentPage = MapWidget(parentScaffoldKey: widget.scaffoldKey, routeArgument: widget.routeArgument);
+          widget.currentPage = OrdersHistoryWidget(parentScaffoldKey: widget.scaffoldKey);
+          break;
+        case 4:
+          if (settingsRepo.setting.value.chatClientEnabled) {
+            widget.currentPage = MessagesWidget(parentScaffoldKey: widget.scaffoldKey); //FavoritesWidget(parentScaffoldKey: widget.scaffoldKey);
+          } else {
+            widget.currentPage = SettingsWidget(parentScaffoldKey: widget.scaffoldKey);
+          }
           break;
       }
     });
+  }
+
+  whatIF() {
+    if (settingsRepo.setting.value.chatClientEnabled) {
+      return BottomNavigationBarItem(
+        icon: new Icon(Icons.chat),
+        label: 'Messages',
+      );
+    } else {
+      return BottomNavigationBarItem(
+        icon: new Icon(Icons.settings),
+        label: S.of(context).settings,
+      );
+    }
   }
 
   @override
@@ -96,14 +120,19 @@ class _PagesTestWidgetState extends State<PagesTestWidget> {
           // this will be set when a new tab is tapped
           items: [
             BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline),
-              title: new Container(height: 0.0),
+              icon: Icon(Icons.person),
+              label: 'Perfil',
             ),
             BottomNavigationBarItem(
-                title: new Container(height: 5.0),
+              icon: new Icon(Icons.notifications),
+              label: S.of(context).notifications,
+            ),
+            BottomNavigationBarItem(
+                label: S.of(context).orders,
                 icon: Container(
                   width: 42,
                   height: 42,
+                  margin: EdgeInsets.only(bottom: 5),
                   decoration: BoxDecoration(
                     color: Theme.of(context).accentColor,
                     borderRadius: BorderRadius.all(
@@ -118,8 +147,13 @@ class _PagesTestWidgetState extends State<PagesTestWidget> {
                 )),
             BottomNavigationBarItem(
               icon: new Icon(Icons.history),
-              title: new Container(height: 0.0),
+              label: 'Historial',
             ),
+            whatIF(),
+            // BottomNavigationBarItem(
+            //   icon: new Icon(Icons.chat),
+            //   label: S.of(context).messages,
+            // ),
           ],
         ),
       ),
