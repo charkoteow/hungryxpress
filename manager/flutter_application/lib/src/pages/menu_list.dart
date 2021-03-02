@@ -1,11 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 
 import '../../generated/l10n.dart';
 import '../controllers/restaurant_controller.dart';
 import '../elements/CircularLoadingWidget.dart';
 import '../elements/DrawerWidget.dart';
-import '../elements/FoodItemMenuWidget.dart';
+import '../elements/FoodItemWidget.dart';
+import '../elements/FoodsCarouselWidget.dart';
+import '../elements/ShoppingCartButtonWidget.dart';
 import '../models/restaurant.dart';
 import '../models/route_argument.dart';
 
@@ -41,22 +45,23 @@ class _MenuWidgetState extends StateMVC<MenuWidget> {
       key: _con.scaffoldKey,
       drawer: DrawerWidget(),
       appBar: AppBar(
-        leading: new IconButton(
-          icon: new Icon(Icons.arrow_back, color: Theme.of(context).hintColor),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
+        automaticallyImplyLeading: false,
+        leading: new IconButton(
+          icon: new Icon(Icons.arrow_back, color: Theme.of(context).hintColor),
+          onPressed: () => Navigator.of(context).pushNamed('/Details', arguments: RouteArgument(id: '0', param: _con.restaurant.id, heroTag: 'menu_tab')),
+        ),
         title: Text(
           _con.restaurant?.name ?? '',
-          textAlign: TextAlign.center,
           overflow: TextOverflow.fade,
-          maxLines: 2,
-          softWrap: true,
+          softWrap: false,
           style: Theme.of(context).textTheme.headline6.merge(TextStyle(letterSpacing: 0)),
         ),
+        actions: <Widget>[
+          new ShoppingCartButtonWidget(iconColor: Theme.of(context).hintColor, labelColor: Theme.of(context).accentColor),
+        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: SingleChildScrollView(
@@ -68,88 +73,99 @@ class _MenuWidgetState extends StateMVC<MenuWidget> {
           children: <Widget>[
             ListTile(
               dense: true,
-              contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 3),
+              contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              leading: Icon(
+                Icons.subject,
+                color: Theme.of(context).hintColor,
+              ),
               title: Text(
-                S.of(context).all_menu,
+                'All menu',
                 style: Theme.of(context).textTheme.headline4,
               ),
               subtitle: Text(
-                'Deslize de derecha a izquierda para ver más categorías',
-                style: Theme.of(context).textTheme.caption.merge(TextStyle(fontSize: 11)),
+                'Click on food for mor details',
+                maxLines: 2,
+                style: Theme.of(context).textTheme.caption,
               ),
             ),
-            //Tabs
-            _con.categoriesRestaurant.isEmpty
-              ? SizedBox(height: 90)
-              : Container(
-                  height: 90,
-                  child: ListView(
-                    primary: false,
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    children: List.generate(_con.categoriesRestaurant.length, (index) {
-                      var _category = _con.categoriesRestaurant.elementAt(index);
-                      var _selected = this.selectedCategories.contains(_category.id);
-                      return Padding(
-                        padding: const EdgeInsetsDirectional.only(start: 20),
-                        child: RawChip(
-                          elevation: 0,
-                          label: Text(_category.description),
-                          labelStyle: _selected
-                              ? Theme.of(context).textTheme.bodyText2.merge(TextStyle(color: Theme.of(context).primaryColor))
-                              : Theme.of(context).textTheme.bodyText2,
-                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 15),
-                          backgroundColor: Theme.of(context).focusColor.withOpacity(0.1),
-                          selectedColor: Theme.of(context).accentColor,
-                          selected: _selected,
-                          //shape: StadiumBorder(side: BorderSide(color: Theme.of(context).focusColor.withOpacity(0.05))),
-                          showCheckmark: false,
-                          onSelected: (bool value) {
-                            setState(() {
-                              if (_category.id == '0') {
-                                this.selectedCategories = ['0'];
-                              } else {
-                                this.selectedCategories = [_category.id];
-                                // this.selectedCategories.removeWhere((element) => element == '0');
-                              }
-                              // if (value) {
-                              //   this.selectedCategories.removeWhere((element) => element != _category.id);
-                              //   this.selectedCategories.add(_category.id);
-                              // } else {
-                              //   this.selectedCategories.removeWhere((element) => element == _category.id);
-                              // }
-                              _con.selectCategory(this.selectedCategories);
-                            });
-                          },
-                        ),
-                      );
-                    }),
+            _con.categories.isEmpty
+                ? SizedBox(height: 90)
+                : Container(
+                    height: 90,
+                    child: ListView(
+                      primary: false,
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      children: List.generate(_con.categories.length, (index) {
+                        var _category = _con.categories.elementAt(index);
+                        var _selected = this.selectedCategories.contains(_category.id);
+                        return Padding(
+                          padding: const EdgeInsetsDirectional.only(start: 20),
+                          child: RawChip(
+                            elevation: 0,
+                            label: Text(_category.name),
+                            labelStyle: _selected
+                                ? Theme.of(context).textTheme.bodyText2.merge(TextStyle(color: Theme.of(context).primaryColor))
+                                : Theme.of(context).textTheme.bodyText2,
+                            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 15),
+                            backgroundColor: Theme.of(context).focusColor.withOpacity(0.1),
+                            selectedColor: Theme.of(context).accentColor,
+                            selected: _selected,
+                            //shape: StadiumBorder(side: BorderSide(color: Theme.of(context).focusColor.withOpacity(0.05))),
+                            showCheckmark: false,
+                            avatar: (_category.id == '0')
+                                ? null
+                                : (_category.image.url.toLowerCase().endsWith('.svg')
+                                    ? SvgPicture.network(
+                                        _category.image.url,
+                                        color: _selected ? Theme.of(context).primaryColor : Theme.of(context).accentColor,
+                                      )
+                                    : CachedNetworkImage(
+                                        fit: BoxFit.cover,
+                                        imageUrl: _category.image.icon,
+                                        placeholder: (context, url) => Image.asset(
+                                          'assets/img/loading.gif',
+                                          fit: BoxFit.cover,
+                                        ),
+                                        errorWidget: (context, url, error) => Icon(Icons.error),
+                                      )),
+                            onSelected: (bool value) {
+                              setState(() {
+                                if (_category.id == '0') {
+                                  this.selectedCategories = ['0'];
+                                } else {
+                                  this.selectedCategories.removeWhere((element) => element == '0');
+                                }
+                                if (value) {
+                                  this.selectedCategories.add(_category.id);
+                                } else {
+                                  this.selectedCategories.removeWhere((element) => element == _category.id);
+                                }
+                                _con.selectCategory(this.selectedCategories);
+                              });
+                            },
+                          ),
+                        );
+                      }),
+                    ),
                   ),
-                ),
-            //Tabs
             _con.foods.isEmpty
-              ? CircularLoadingWidget(height: 250)
-              : ListView.separated(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                primary: false,
-                itemCount: _con.foods.length,
-                separatorBuilder: (context, index) {
-                  return SizedBox(height: 10);
-                },
-                itemBuilder: (context, index) {
-                  return FoodItemMenuWidget(
-                    heroTag: 'menu_list',
-                    food: _con.foods.elementAt(index),
-                    onAction: (value) {
-                      _con.foods.elementAt(index).foodStatus == 0 ? _con.doStatusFoodOn(_con.foods.elementAt(index)) : _con.doStatusFoodOff(_con.foods.elementAt(index));
+                ? CircularLoadingWidget(height: 250)
+                : ListView.separated(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    primary: false,
+                    itemCount: _con.foods.length,
+                    separatorBuilder: (context, index) {
+                      return SizedBox(height: 10);
                     },
-                  );
-                },
-              )
-            // _con.foods.isEmpty
-                // ? CircularLoadingWidget(height: 250)
-
+                    itemBuilder: (context, index) {
+                      return FoodItemWidget(
+                        heroTag: 'menu_list',
+                        food: _con.foods.elementAt(index),
+                      );
+                    },
+                  ),
           ],
         ),
       ),

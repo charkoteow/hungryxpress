@@ -180,7 +180,7 @@ class _FoodWidgetState extends StateMVC<FoodWidget> {
                                           borderRadius: BorderRadius.circular(24)
                                         ),
                                         child: Text(
-                                          _con.food.packageItemsCount + " " + 'Artículo',
+                                          _con.food.packageItemsCount + " " + 'Item',
                                           style: Theme.of(context).textTheme.caption.merge(TextStyle(color: Theme.of(context).primaryColor)),
                                         )
                                       )
