@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:food_delivery_app/src/models/user.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -154,6 +155,28 @@ Future<Review> addRestaurantReview(Review review, Restaurant restaurant) async {
       url,
       headers: {HttpHeaders.contentTypeHeader: 'application/json'},
       body: json.encode(review.ofRestaurantToMap(restaurant)),
+    );
+    if (response.statusCode == 200) {
+      return Review.fromJSON(json.decode(response.body)['data']);
+    } else {
+      print(CustomTrace(StackTrace.current, message: response.body).toString());
+      return Review.fromJSON({});
+    }
+  } catch (e) {
+    print(CustomTrace(StackTrace.current, message: url).toString());
+    return Review.fromJSON({});
+  }
+}
+
+Future<Review> addDriverReview(Review review, User driver) async {
+  final String url = '${GlobalConfiguration().getValue('api_base_url')}driver_reviews';
+  final client = new http.Client();
+  review.user = currentUser.value;
+  try {
+    final response = await client.post(
+      url,
+      headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+      body: json.encode(review.ofDriverToMap(driver)),
     );
     if (response.statusCode == 200) {
       return Review.fromJSON(json.decode(response.body)['data']);

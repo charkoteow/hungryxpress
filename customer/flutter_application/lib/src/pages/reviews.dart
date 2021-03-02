@@ -256,6 +256,107 @@ class _ReviewsWidgetState extends StateMVC<ReviewsWidget> {
                           }),
                         ),
                         SizedBox(height: 20),
+                        /**
+                         * Review Driver
+                         * */
+                        if (_con.order.canSeeDataDeliveryBoy())
+                          ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(300)),
+                            child: CachedNetworkImage(
+                              height: 85,
+                              width: 85,
+                              fit: BoxFit.cover,
+                              imageUrl: _con.order.driver.image?.thumb,
+                              placeholder: (context, url) => Image.asset(
+                                'assets/img/loading.gif',
+                                fit: BoxFit.cover,
+                                height: 85,
+                                width: 85,
+                              ),
+                              errorWidget: (context, url, error) => Icon(Icons.error),
+                            ),
+                          ),
+                        if (_con.order.canSeeDataDeliveryBoy())
+                          Text(
+                            _con.order.driver?.name ?? "",
+                            overflow: TextOverflow.fade,
+                            softWrap: false,
+                            maxLines: 2,
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.headline3,
+                          ),
+                        if (_con.order.canSeeDataDeliveryBoy())
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                            padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [BoxShadow(color: Theme.of(context).focusColor.withOpacity(0.15), offset: Offset(0, -2), blurRadius: 5.0)]),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                Text('How would you rate this delivery boy?',
+                                    textAlign: TextAlign.center, style: Theme.of(context).textTheme.subtitle1),
+                                SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: List.generate(5, (index) {
+                                    return InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          _con.driverReview.rate = (index + 1).toString();
+                                        });
+                                      },
+                                      child: index < int.parse(_con.driverReview.rate)
+                                          ? Icon(Icons.star, size: 40, color: Color(0xFFFFB24D))
+                                          : Icon(Icons.star_border, size: 40, color: Color(0xFFFFB24D)),
+                                    );
+                                  }),
+                                ),
+                                SizedBox(height: 10),
+                                TextField(
+                                  onChanged: (text) {
+                                    _con.driverReview.review = text;
+                                  },
+                                  maxLines: 2,
+                                  textAlign: TextAlign.center,
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.all(12),
+                                    hintText: 'Tell us about this driver',
+                                    hintStyle: Theme.of(context).textTheme.caption.merge(TextStyle(fontSize: 14)),
+                                    border: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).focusColor.withOpacity(0.1))),
+                                    focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).focusColor.withOpacity(0.2))),
+                                    enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).focusColor.withOpacity(0.1))),
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                FlatButton.icon(
+                                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 18),
+                                  onPressed: () {
+                                    _con.addDriverReview(_con.driverReview);
+                                    FocusScope.of(context).unfocus();
+                                  },
+                                  shape: StadiumBorder(),
+                                  label: Text(
+                                    S.of(context).submit,
+                                    style: TextStyle(color: Theme.of(context).primaryColor),
+                                  ),
+                                  icon: Icon(
+                                    Icons.check,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                  textColor: Theme.of(context).primaryColor,
+                                  color: Theme.of(context).accentColor,
+                                ),
+                              ],
+                            ),
+                          ),
+                        if (_con.order.canSeeDataDeliveryBoy())
+                          SizedBox(height: 20)
                       ],
                     ),
                   )));

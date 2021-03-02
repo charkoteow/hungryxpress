@@ -47,6 +47,12 @@ class Review {
     return map;
   }
 
+  Map ofDriverToMap(User driver) {
+    var map = this.toMap();
+    map["driver_id"] = driver.id;
+    return map;
+  }
+
   Map ofFoodToMap(Food food) {
     var map = this.toMap();
     map["food_id"] = food.id;

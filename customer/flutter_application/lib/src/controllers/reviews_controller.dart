@@ -12,6 +12,7 @@ import '../repository/restaurant_repository.dart' as restaurantRepo;
 
 class ReviewsController extends ControllerMVC {
   Review restaurantReview;
+  Review driverReview;
   List<Review> foodsReviews = [];
   Order order;
   List<Food> foodsOfOrder = [];
@@ -21,6 +22,7 @@ class ReviewsController extends ControllerMVC {
   ReviewsController() {
     this.scaffoldKey = new GlobalKey<ScaffoldState>();
     this.restaurantReview = new Review.init("0");
+    this.driverReview = new Review.init("0");
   }
 
   void listenForOrder({String orderId, String message}) async {
@@ -58,6 +60,15 @@ class ReviewsController extends ControllerMVC {
       refreshOrder();
       scaffoldKey?.currentState?.showSnackBar(SnackBar(
         content: Text(S.of(context).the_restaurant_has_been_rated_successfully),
+      ));
+    });
+  }
+
+  void addDriverReview(Review _review) async {
+    restaurantRepo.addDriverReview(_review, this.order.driver).then((value) {
+      refreshOrder();
+      scaffoldKey?.currentState?.showSnackBar(SnackBar(
+        content: Text('The delivery boy has been rated successfully'),
       ));
     });
   }

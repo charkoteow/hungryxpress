@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/src/models/conversation.dart';
+import 'package:food_delivery_app/src/models/restaurant.dart';
+import 'package:food_delivery_app/src/models/user.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:mvc_pattern/mvc_pattern.dart';
 
@@ -10,6 +13,7 @@ import '../elements/FoodOrderItemWidget.dart';
 import '../elements/ShoppingCartButtonWidget.dart';
 import '../helpers/helper.dart';
 import '../models/route_argument.dart';
+import '../repository/settings_repository.dart';
 
 class TrackingWidget extends StatefulWidget {
   final RouteArgument routeArgument;
@@ -380,7 +384,58 @@ class _TrackingWidgetState extends StateMVC<TrackingWidget> with SingleTickerPro
                                             ),
                                           ],
                                         ),
-                                      )
+                                      ),
+                                      //Delivery Boy
+                                      if (setting.value.chatClientEnabled)
+                                        SizedBox(width: 10),
+                                      if (setting.value.chatClientEnabled)
+                                        _con.order.orderStatus.id == '6'
+                                        ? SizedBox(
+                                          width: 42,
+                                          height: 42,
+                                          child: FlatButton(
+                                            padding: EdgeInsets.all(0),
+                                            disabledColor: Theme.of(context).focusColor.withOpacity(0.4),
+                                            //onPressed: () {
+                                //                                    Navigator.of(context).pushNamed('/Profile',
+                                //                                        arguments: new RouteArgument(param: _con.order.deliveryAddress));
+                                            //},
+                                            child: Icon(
+                                              Icons.chat,
+                                              color: Theme.of(context).primaryColor,
+                                              size: 24,
+                                            ),
+                                            color: Theme.of(context).accentColor.withOpacity(0.9),
+                                            shape: StadiumBorder(),
+                                          ),
+                                        )
+                                        : SizedBox(
+                                            width: 42,
+                                            height: 42,
+                                            child: FlatButton(
+                                              padding: EdgeInsets.all(0),
+                                              disabledColor: Theme.of(context).focusColor.withOpacity(0.4),
+                                              onPressed: () {
+                                                Restaurant _restaurant = _con.order.foodOrders[0].food.restaurant;
+                                                List<User> _drivers = _restaurant.drivers
+                                                    .map((e) {
+                                                      e.image = _restaurant.image;
+                                                      return e;
+                                                    })
+                                                    .toSet()
+                                                    .toList();
+                                                _drivers.insert(0, _con.order.driver);
+                                                Navigator.of(context).pushNamed('/Chat', arguments: RouteArgument(param: new Conversation(_drivers, name: _con.order.driver.name)));
+                                              },
+                                              child: Icon(
+                                                Icons.chat,
+                                                color: Theme.of(context).primaryColor,
+                                                size: 24,
+                                              ),
+                                              color: Theme.of(context).accentColor.withOpacity(0.9),
+                                              shape: StadiumBorder(),
+                                            ),
+                                          ),
                                     ],
                                   ),
                                 )

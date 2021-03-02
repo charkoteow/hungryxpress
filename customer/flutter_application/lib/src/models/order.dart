@@ -15,6 +15,8 @@ class Order {
   bool active;
   DateTime dateTime;
   User user;
+  User driver;
+  String driverId;
   Payment payment;
   Address deliveryAddress;
 
@@ -30,6 +32,8 @@ class Order {
       orderStatus = jsonMap['order_status'] != null ? OrderStatus.fromJSON(jsonMap['order_status']) : OrderStatus.fromJSON({});
       dateTime = DateTime.parse(jsonMap['updated_at']);
       user = jsonMap['user'] != null ? User.fromJSON(jsonMap['user']) : User.fromJSON({});
+      driver = jsonMap['driver'] != null ? User.fromJSON(jsonMap['driver']) : User.fromJSON({});
+      driverId = jsonMap['driver_id'] != null ? jsonMap['driver_id'].toString() : '';
       deliveryAddress = jsonMap['delivery_address'] != null ? Address.fromJSON(jsonMap['delivery_address']) : Address.fromJSON({});
       payment = jsonMap['payment'] != null ? Payment.fromJSON(jsonMap['payment']) : Payment.fromJSON({});
       foodOrders = jsonMap['food_orders'] != null ? List.from(jsonMap['food_orders']).map((element) => FoodOrder.fromJSON(element)).toList() : [];
@@ -42,6 +46,8 @@ class Order {
       orderStatus = OrderStatus.fromJSON({});
       dateTime = DateTime(0);
       user = User.fromJSON({});
+      driver = User.fromJSON({});
+      driverId = '';
       payment = Payment.fromJSON({});
       deliveryAddress = Address.fromJSON({});
       foodOrders = [];
@@ -74,5 +80,9 @@ class Order {
 
   bool canCancelOrder() {
     return this.active == true && this.orderStatus.id == '1'; // 1 for order received status
+  }
+
+  bool canSeeDataDeliveryBoy() {
+    return this.driverId.isNotEmpty; // Not empty, show data delivery boy
   }
 }

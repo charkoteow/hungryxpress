@@ -1,5 +1,6 @@
 import '../helpers/custom_trace.dart';
 import '../models/media.dart';
+import 'dart:io';
 
 enum UserState { available, away, busy }
 
@@ -14,6 +15,7 @@ class User {
   String address;
   String bio;
   Media image;
+  String rate;
 
   // used for indicate if client logged in or not
   bool auth;
@@ -45,6 +47,7 @@ class User {
         bio = "";
       }
       image = jsonMap['media'] != null && (jsonMap['media'] as List).length > 0 ? Media.fromJSON(jsonMap['media'][0]) : new Media();
+      rate = jsonMap['rate'] ?? '0';
     } catch (e) {
       print(CustomTrace(StackTrace.current, message: e));
     }
@@ -60,6 +63,7 @@ class User {
     if (deviceToken != null) {
       map["device_token"] = deviceToken;
     }
+    map["device_os"] = Platform.isIOS ? 'iOS' : 'Android';
     map["phone"] = phone;
     map["address"] = address;
     map["bio"] = bio;

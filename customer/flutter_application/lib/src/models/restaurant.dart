@@ -23,6 +23,7 @@ class Restaurant {
   double deliveryRange;
   double distance;
   List<User> users;
+  List<User> drivers;
   List<OpenRestaurant> openRestaurants;
 
   Restaurant();
@@ -49,6 +50,12 @@ class Restaurant {
       distance = jsonMap['distance'] != null ? double.parse(jsonMap['distance'].toString()) : 0.0;
       users = jsonMap['users'] != null && (jsonMap['users'] as List).length > 0
           ? List.from(jsonMap['users']).map((element) => User.fromJSON(element)).toSet().toList()
+          : [];
+      drivers = jsonMap['drivers'] != null && (jsonMap['drivers'] as List).length > 0
+          ? List.from(jsonMap['drivers'])
+              .map((element) => User.fromJSON(element))
+              .toSet()
+              .toList()
           : [];
       openRestaurants = jsonMap['open_restaurants'] != null &&
               (jsonMap['open_restaurants'] as List).length > 0
@@ -82,6 +89,7 @@ class Restaurant {
       availableForDelivery = false;
       distance = 0.0;
       users = [];
+      drivers = [];
       openRestaurants = [];
       print(CustomTrace(StackTrace.current, message: e));
     }

@@ -36,7 +36,7 @@ Future<Stream<Order>> getOrder(orderId) async {
   }
   final String _apiToken = 'api_token=${_user.apiToken}&';
   final String url =
-      '${GlobalConfiguration().getValue('api_base_url')}orders/$orderId?${_apiToken}with=user;foodOrders;foodOrders.food;foodOrders.extras;orderStatus;deliveryAddress;payment';
+      '${GlobalConfiguration().getValue('api_base_url')}orders/$orderId?${_apiToken}with=driver;user;foodOrders;foodOrders.food;foodOrders.extras;orderStatus;deliveryAddress;payment';
   final client = new http.Client();
   final streamedRest = await client.send(http.Request('get', Uri.parse(url)));
 
