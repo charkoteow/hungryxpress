@@ -55,6 +55,325 @@ class _OrderWidgetState extends StateMVC<OrderWidget> with SingleTickerProviderS
     }
   }
 
+  getStatusOrderForDelivery() {
+    if (_con.order.orderStatus.id == '1') {
+      return Container(
+        height: _con.order.orderStatus.id == '5' ? 190 : 250,
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor,
+            borderRadius: BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+            boxShadow: [BoxShadow(color: Theme.of(context).focusColor.withOpacity(0.15), offset: Offset(0, -2), blurRadius: 5.0)]),
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width - 40,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Text(
+                      S.of(context).subtotal,
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                  ),
+                  Helper.getPrice(Helper.getSubTotalOrdersPrice(_con.order), context, style: Theme.of(context).textTheme.subtitle1)
+                ],
+              ),
+              SizedBox(height: 5),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Text(
+                      S.of(context).delivery_fee,
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                  ),
+                  Helper.getPrice(_con.order.deliveryFee, context, style: Theme.of(context).textTheme.subtitle1)
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Text(
+                      '${S.of(context).tax} (${_con.order.tax}%)',
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                  ),
+                  Helper.getPrice(Helper.getTaxOrder(_con.order), context, style: Theme.of(context).textTheme.subtitle1)
+                ],
+              ),
+              Divider(height: 30),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Text(
+                      S.of(context).total,
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                  ),
+                  Helper.getPrice(Helper.getTotalOrdersPrice(_con.order), context, style: Theme.of(context).textTheme.headline6)
+                ],
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width - 40,
+                child: FlatButton(
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text(S.of(context).delivery_confirmation),
+                            content: Text('Are you sure you want to reject the order?'),
+                            actions: <Widget>[
+                              // usually buttons at the bottom of the dialog
+                              FlatButton(
+                                child: new Text(S.of(context).confirm),
+                                onPressed: () {
+                                  _con.doRejectOrder(_con.order);
+                                  // Navigator.of(context).pop();
+                                },
+                              ),
+                              FlatButton(
+                                child: new Text(S.of(context).dismiss),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        });
+                  },
+                  padding: EdgeInsets.symmetric(vertical: 14),
+                  color: Theme.of(context).accentColor,
+                  shape: StadiumBorder(),
+                  child: Text(
+                    'Reject the order',
+                    textAlign: TextAlign.start,
+                    style: TextStyle(color: Theme.of(context).primaryColor),
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+            ],
+          ),
+        ),
+      );
+    } else if (_con.order.orderStatus.id == '2') {
+      return Container(
+        height: _con.order.orderStatus.id == '5' ? 190 : 250,
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor,
+            borderRadius: BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+            boxShadow: [BoxShadow(color: Theme.of(context).focusColor.withOpacity(0.15), offset: Offset(0, -2), blurRadius: 5.0)]),
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width - 40,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Text(
+                      S.of(context).subtotal,
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                  ),
+                  Helper.getPrice(Helper.getSubTotalOrdersPrice(_con.order), context, style: Theme.of(context).textTheme.subtitle1)
+                ],
+              ),
+              SizedBox(height: 5),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Text(
+                      S.of(context).delivery_fee,
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                  ),
+                  Helper.getPrice(_con.order.deliveryFee, context, style: Theme.of(context).textTheme.subtitle1)
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Text(
+                      '${S.of(context).tax} (${_con.order.tax}%)',
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                  ),
+                  Helper.getPrice(Helper.getTaxOrder(_con.order), context, style: Theme.of(context).textTheme.subtitle1)
+                ],
+              ),
+              Divider(height: 30),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Text(
+                      S.of(context).total,
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                  ),
+                  Helper.getPrice(Helper.getTotalOrdersPrice(_con.order), context, style: Theme.of(context).textTheme.headline6)
+                ],
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width - 40,
+                child: FlatButton(
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text(S.of(context).delivery_confirmation),
+                            content: Text('Are you sure you want to reject the order?'),
+                            actions: <Widget>[
+                              // usually buttons at the bottom of the dialog
+                              FlatButton(
+                                child: new Text(S.of(context).confirm),
+                                onPressed: () {
+                                  _con.doRejectOrder(_con.order);
+                                  // Navigator.of(context).pop();
+                                },
+                              ),
+                              FlatButton(
+                                child: new Text(S.of(context).dismiss),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        });
+                  },
+                  padding: EdgeInsets.symmetric(vertical: 14),
+                  color: Theme.of(context).accentColor,
+                  shape: StadiumBorder(),
+                  child: Text(
+                    'Reject the order',
+                    textAlign: TextAlign.start,
+                    style: TextStyle(color: Theme.of(context).primaryColor),
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+            ],
+          ),
+        ),
+      );
+    } else {
+      return Container(
+        height: _con.order.orderStatus.id == '5' ? 190 : 250,
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor,
+            borderRadius: BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+            boxShadow: [BoxShadow(color: Theme.of(context).focusColor.withOpacity(0.15), offset: Offset(0, -2), blurRadius: 5.0)]),
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width - 40,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Text(
+                      S.of(context).subtotal,
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                  ),
+                  Helper.getPrice(Helper.getSubTotalOrdersPrice(_con.order), context, style: Theme.of(context).textTheme.subtitle1)
+                ],
+              ),
+              SizedBox(height: 5),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Text(
+                      S.of(context).delivery_fee,
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                  ),
+                  Helper.getPrice(_con.order.deliveryFee, context, style: Theme.of(context).textTheme.subtitle1)
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Text(
+                      '${S.of(context).tax} (${_con.order.tax}%)',
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                  ),
+                  Helper.getPrice(Helper.getTaxOrder(_con.order), context, style: Theme.of(context).textTheme.subtitle1)
+                ],
+              ),
+              Divider(height: 30),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Text(
+                      S.of(context).total,
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                  ),
+                  Helper.getPrice(Helper.getTotalOrdersPrice(_con.order), context, style: Theme.of(context).textTheme.headline6)
+                ],
+              ),
+              _con.order.orderStatus.id != '5' ? SizedBox(height: 20) : SizedBox(height: 0),
+              _con.order.orderStatus.id != '5'
+                  ? SizedBox(
+                      width: MediaQuery.of(context).size.width - 40,
+                      child: FlatButton(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text(S.of(context).delivery_confirmation),
+                                  content: Text(S.of(context).would_you_please_confirm_if_you_have_delivered_all_meals),
+                                  actions: <Widget>[
+                                    // usually buttons at the bottom of the dialog
+                                    FlatButton(
+                                      child: new Text(S.of(context).confirm),
+                                      onPressed: () {
+                                        _con.doDeliveredOrder(_con.order);
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                    FlatButton(
+                                      child: new Text(S.of(context).dismiss),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              });
+                        },
+                        padding: EdgeInsets.symmetric(vertical: 14),
+                        color: Theme.of(context).accentColor,
+                        shape: StadiumBorder(),
+                        child: Text(
+                          S.of(context).delivered,
+                          textAlign: TextAlign.start,
+                          style: TextStyle(color: Theme.of(context).primaryColor),
+                        ),
+                      ),
+                    )
+                  : SizedBox(height: 0),
+              SizedBox(height: 10),
+            ],
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,112 +391,7 @@ class _OrderWidgetState extends StateMVC<OrderWidget> with SingleTickerProviderS
                 width: MediaQuery.of(context).size.width - 40,
               ),
             )
-          : Container(
-              height: _con.order.orderStatus.id == '5' ? 190 : 250,
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-              decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20)),
-                  boxShadow: [BoxShadow(color: Theme.of(context).focusColor.withOpacity(0.15), offset: Offset(0, -2), blurRadius: 5.0)]),
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width - 40,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Text(
-                            S.of(context).subtotal,
-                            style: Theme.of(context).textTheme.bodyText1,
-                          ),
-                        ),
-                        Helper.getPrice(Helper.getSubTotalOrdersPrice(_con.order), context, style: Theme.of(context).textTheme.subtitle1)
-                      ],
-                    ),
-                    SizedBox(height: 5),
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Text(
-                            S.of(context).delivery_fee,
-                            style: Theme.of(context).textTheme.bodyText1,
-                          ),
-                        ),
-                        Helper.getPrice(_con.order.deliveryFee, context, style: Theme.of(context).textTheme.subtitle1)
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Text(
-                            '${S.of(context).tax} (${_con.order.tax}%)',
-                            style: Theme.of(context).textTheme.bodyText1,
-                          ),
-                        ),
-                        Helper.getPrice(Helper.getTaxOrder(_con.order), context, style: Theme.of(context).textTheme.subtitle1)
-                      ],
-                    ),
-                    Divider(height: 30),
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Text(
-                            S.of(context).total,
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                        ),
-                        Helper.getPrice(Helper.getTotalOrdersPrice(_con.order), context, style: Theme.of(context).textTheme.headline6)
-                      ],
-                    ),
-                    _con.order.orderStatus.id != '5' ? SizedBox(height: 20) : SizedBox(height: 0),
-                    _con.order.orderStatus.id != '5'
-                        ? SizedBox(
-                            width: MediaQuery.of(context).size.width - 40,
-                            child: FlatButton(
-                              onPressed: () {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        title: Text(S.of(context).delivery_confirmation),
-                                        content: Text(S.of(context).would_you_please_confirm_if_you_have_delivered_all_meals),
-                                        actions: <Widget>[
-                                          // usually buttons at the bottom of the dialog
-                                          FlatButton(
-                                            child: new Text(S.of(context).confirm),
-                                            onPressed: () {
-                                              _con.doDeliveredOrder(_con.order);
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                          FlatButton(
-                                            child: new Text(S.of(context).dismiss),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    });
-                              },
-                              padding: EdgeInsets.symmetric(vertical: 14),
-                              color: Theme.of(context).accentColor,
-                              shape: StadiumBorder(),
-                              child: Text(
-                                S.of(context).delivered,
-                                textAlign: TextAlign.start,
-                                style: TextStyle(color: Theme.of(context).primaryColor),
-                              ),
-                            ),
-                          )
-                        : SizedBox(height: 0),
-                    SizedBox(height: 10),
-                  ],
-                ),
-              ),
-            ),
+          : getStatusOrderForDelivery(),
       body: _con.order == null
           ? CircularLoadingWidget(height: 400)
           : CustomScrollView(slivers: <Widget>[

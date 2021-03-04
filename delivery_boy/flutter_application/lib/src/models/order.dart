@@ -14,6 +14,7 @@ class Order {
   String hint;
   DateTime dateTime;
   User user;
+  User driver;
   Payment payment;
   Address deliveryAddress;
 
@@ -28,6 +29,7 @@ class Order {
       orderStatus = jsonMap['order_status'] != null ? OrderStatus.fromJSON(jsonMap['order_status']) : new OrderStatus();
       dateTime = DateTime.parse(jsonMap['updated_at']);
       user = jsonMap['user'] != null ? User.fromJSON(jsonMap['user']) : new User();
+      driver = jsonMap['driver'] != null ? User.fromJSON(jsonMap['driver']) : User.fromJSON({});
       payment = jsonMap['payment'] != null ? Payment.fromJSON(jsonMap['payment']) : new Payment.init();
       deliveryAddress = jsonMap['delivery_address'] != null ? Address.fromJSON(jsonMap['delivery_address']) : new Address();
       foodOrders = jsonMap['food_orders'] != null ? List.from(jsonMap['food_orders']).map((element) => FoodOrder.fromJSON(element)).toList() : [];
@@ -63,6 +65,13 @@ class Order {
     var map = new Map<String, dynamic>();
     map["id"] = id;
     map["order_status_id"] = 5;
+    return map;
+  }
+
+  Map rejectorderMap() {
+    var map = new Map<String, dynamic>();
+    map["id"] = id;
+    map["driver_id"] = null;
     return map;
   }
 }

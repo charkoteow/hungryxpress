@@ -101,7 +101,7 @@ Future<Stream<Order>> getOrder(orderId) async {
   }
   final String _apiToken = 'api_token=${_user.apiToken}&';
   final String url =
-      '${GlobalConfiguration().getString('api_base_url')}orders/$orderId?${_apiToken}with=user;foodOrders;foodOrders.food;foodOrders.extras;orderStatus;deliveryAddress;payment';
+      '${GlobalConfiguration().getString('api_base_url')}orders/$orderId?${_apiToken}with=driver;user;foodOrders;foodOrders.food;foodOrders.extras;orderStatus;deliveryAddress;payment';
   final client = new http.Client();
   final streamedRest = await client.send(http.Request('get', Uri.parse(url)));
 
@@ -166,6 +166,22 @@ Future<Order> deliveredOrder(Order order) async {
     url,
     headers: {HttpHeaders.contentTypeHeader: 'application/json'},
     body: json.encode(order.deliveredMap()),
+  );
+  return Order.fromJSON(json.decode(response.body)['data']);
+}
+
+Future<Order> rejectOrder(Order order) async {
+  User _user = userRepo.currentUser.value;
+  if (_user.apiToken == null) {
+    return new Order();
+  }
+  final String _apiToken = 'api_token=${_user.apiToken}';
+  final String url = '${GlobalConfiguration().getString('api_base_url')}orders/${order.id}?$_apiToken';
+  final client = new http.Client();
+  final response = await client.put(
+    url,
+    headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+    body: json.encode(order.rejectorderMap()),
   );
   return Order.fromJSON(json.decode(response.body)['data']);
 }

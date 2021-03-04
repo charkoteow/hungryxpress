@@ -1,4 +1,6 @@
+import 'package:deliveryboy/src/pages/orders.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 
 import '../../generated/l10n.dart';
@@ -43,6 +45,38 @@ class OrderDetailsController extends ControllerMVC {
       scaffoldKey?.currentState?.showSnackBar(SnackBar(
         content: Text('The order deliverd successfully to client'),
       ));
+    });
+  }
+
+  void doRejectOrder(Order _order) async {
+  rejectOrder(_order).then((value) {
+    }).catchError((e) {
+      Fluttertoast.showToast(
+        msg: "An error occurred, retry to save changes",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Colors.grey[900],
+        textColor: Colors.white,
+        fontSize: 16.0
+      );
+    }).whenComplete(() {
+      Navigator.of(context).pop();
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                OrdersWidget()),
+      );
+      Fluttertoast.showToast(
+        msg: "Order rejected",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Colors.grey[900],
+        textColor: Colors.white,
+        fontSize: 16.0
+      );
     });
   }
 }
