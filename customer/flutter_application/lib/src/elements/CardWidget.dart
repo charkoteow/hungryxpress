@@ -15,6 +15,43 @@ class CardWidget extends StatelessWidget {
   CardWidget({Key key, this.restaurant, this.heroTag}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    
+    getStatusRestaurantBadge() {
+      if (restaurant.closed){
+        return Container(
+          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+          decoration:
+              BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.circular(24)),
+          child: Text(
+            S.of(context).closed,
+            style: Theme.of(context).textTheme.caption.merge(TextStyle(color: Theme.of(context).primaryColor)),
+          ),
+        );
+      } else {
+        if (restaurant.currentOpenRestaurant()) {
+          return Container(
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+            decoration:
+                BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(24)),
+            child: Text(
+              S.of(context).open,
+              style: Theme.of(context).textTheme.caption.merge(TextStyle(color: Theme.of(context).primaryColor)),
+            ),
+          );
+        } else {
+          return Container(
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+            decoration:
+                BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.circular(24)),
+            child: Text(
+              S.of(context).closed,
+              style: Theme.of(context).textTheme.caption.merge(TextStyle(color: Theme.of(context).primaryColor)),
+            ),
+          );
+        }
+      }
+    }
+
     return Container(
       width: 292,
       margin: EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 20),
@@ -60,15 +97,7 @@ class CardWidget extends StatelessWidget {
                     margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
                     decoration: BoxDecoration(color: restaurant.closed ? Colors.grey : Colors.green, borderRadius: BorderRadius.circular(24)),
-                    child: restaurant.closed
-                        ? Text(
-                            S.of(context).closed,
-                            style: Theme.of(context).textTheme.caption.merge(TextStyle(color: Theme.of(context).primaryColor)),
-                          )
-                        : Text(
-                            S.of(context).open,
-                            style: Theme.of(context).textTheme.caption.merge(TextStyle(color: Theme.of(context).primaryColor)),
-                          ),
+                    child: getStatusRestaurantBadge(),
                   ),
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 0, vertical: 8),

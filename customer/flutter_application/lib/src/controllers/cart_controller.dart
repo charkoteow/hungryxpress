@@ -254,7 +254,13 @@ class CartController extends ControllerMVC {
           content: Text(S.of(context).this_restaurant_is_closed_),
         ));
       } else {
-        Navigator.of(context).pushNamed('/DeliveryPickup');
+        if (carts[0].food.restaurant.currentOpenRestaurant()) {
+          Navigator.of(context).pushNamed('/DeliveryPickup');
+        } else {
+          scaffoldKey?.currentState?.showSnackBar(SnackBar(
+            content: Text(S.of(context).this_restaurant_is_closed_),
+          ));
+        }
       }
     }
   }
