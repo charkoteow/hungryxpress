@@ -324,24 +324,74 @@ class _FoodWidgetState extends StateMVC<FoodWidget> {
                   Positioned(
                     top: 30,
                     right: 15,
-                    child: IconButton(
-                      icon: Container(
-                        width: 80,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          color: Colors.white, shape: BoxShape.circle
-                        ),
-                        child: Center(
-                          child: Icon(
-                            Icons.edit,
-                            size: 25,
-                            color: Colors.black,
+                    child: Row(
+                      children: <Widget>[
+                        IconButton(
+                          icon: Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              color: Colors.white, shape: BoxShape.circle
+                            ),
+                            child: Center(
+                              child: Icon(
+                                Icons.edit,
+                                size: 25,
+                                color: Colors.black,
+                              ),
+                            ),
                           ),
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => ProductEditWidget(id: _con.food.id, store: _con.food.restaurant.id)));
+                          },
                         ),
-                      ),
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => ProductEditWidget(id: _con.food.id, store: _con.food.restaurant.id)));
-                      },
+                        IconButton(
+                          icon: Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              color: Colors.white, shape: BoxShape.circle
+                            ),
+                            child: Center(
+                              child: Icon(
+                                Icons.delete,
+                                size: 20,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text(S.of(context).confirmation),
+                                  content: Text("sure you want to remove this product?"),
+                                  actions: <Widget>[
+                                    // usually buttons at the bottom of the dialog
+                                    FlatButton(
+                                      textColor: Theme.of(context).focusColor,
+                                      child: new Text(S.of(context).confirm),
+                                      onPressed: () {
+                                        _con.doRemoveProduct(_con.food);
+                                        // Navigator.of(context).pop();
+                                        // Navigator.of(context).pop();
+                                      },
+                                    ),
+                                    FlatButton(
+                                      child: new Text(S.of(context).dismiss),
+                                      textColor: Theme.of(context).accentColor,
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              }
+                            );
+                          },
+                        ),
+                      ]
                     ),
                   ),
                 ],

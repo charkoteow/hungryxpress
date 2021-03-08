@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:food_delivery_owner/src/pages/product_add.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 
 import '../../generated/l10n.dart';
@@ -9,7 +10,7 @@ import '../elements/CircularLoadingWidget.dart';
 import '../elements/DrawerWidget.dart';
 import '../elements/FoodItemWidget.dart';
 import '../elements/FoodsCarouselWidget.dart';
-import '../elements/ShoppingCartButtonWidget.dart';
+import '../elements/AddNewProductButtonWidget.dart';
 import '../models/restaurant.dart';
 import '../models/route_argument.dart';
 
@@ -60,7 +61,24 @@ class _MenuWidgetState extends StateMVC<MenuWidget> {
           style: Theme.of(context).textTheme.headline6.merge(TextStyle(letterSpacing: 0)),
         ),
         actions: <Widget>[
-          new ShoppingCartButtonWidget(iconColor: Theme.of(context).hintColor, labelColor: Theme.of(context).accentColor),
+          new FlatButton(
+            onPressed: () {
+              // Navigator.of(context).pushNamed('/AddProductWidget');
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ProductAddWidget(store: int.tryParse(_con.restaurant.id))));
+            },
+            child: Stack(
+              alignment: AlignmentDirectional.bottomEnd,
+              children: <Widget>[
+                Icon(
+                  Icons.plus_one_outlined,
+                  color: Theme.of(context).accentColor,
+                  size: 28,
+                ),
+              ],
+            ),
+            color: Colors.transparent,
+          )
+          // new AddNewProductButtonWidget(iconColor: Theme.of(context).hintColor, labelColor: Theme.of(context).accentColor),
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,

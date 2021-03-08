@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:food_delivery_owner/src/pages/food.dart';
-import 'package:food_delivery_owner/src/pages/menu_list.dart';
 
 import 'src/models/route_argument.dart';
 import 'src/pages/chat.dart';
@@ -13,6 +11,9 @@ import 'src/pages/notifications.dart';
 import 'src/pages/order.dart';
 import 'src/pages/order_edit.dart';
 import 'src/pages/pages.dart';
+import 'src/pages/product_add.dart';
+import 'src/pages/food.dart';
+import 'src/pages/menu_list.dart';
 import 'src/pages/settings.dart';
 import 'src/pages/signup.dart';
 import 'src/pages/splash_screen.dart';
@@ -50,6 +51,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => OrderEditWidget(routeArgument: args as RouteArgument));
       case '/Notifications':
         return MaterialPageRoute(builder: (_) => NotificationsWidget());
+      // case '/AddProductWidget':
+      //   return MaterialPageRoute(builder: (_) => ProductAddWidget());
       case '/Languages':
         return MaterialPageRoute(builder: (_) => LanguagesWidget());
       case '/Help':

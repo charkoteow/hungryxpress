@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:food_delivery_owner/src/models/restaurant.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -341,6 +342,66 @@ Future<Food> updateOrder(Food food) async {
   //final String url = '${GlobalConfiguration().getString('api_base_url')}orders/${order.id}?$_apiToken';
   final client = new http.Client();
   final response = await client.put(
+    uri.toString(),
+    headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+    body: json.encode(food.toMap()),
+  );
+  return Food.fromJSON(json.decode(response.body)['data']);
+}
+
+//Update product
+Future<Food> deleteProduct(Food food) async {
+  Uri uri = Helper.getUri('api/foods/${food.id}');
+  User _user = userRepo.currentUser.value;
+  if (_user.apiToken == null) {
+    return new Food();
+  }
+  Map<String, dynamic> _queryParams = {};
+  _queryParams['api_token'] = _user.apiToken;
+  uri = uri.replace(queryParameters: _queryParams);
+
+  //final String url = '${GlobalConfiguration().getString('api_base_url')}orders/${order.id}?$_apiToken';
+  final client = new http.Client();
+  final response = await client.delete(
+    uri.toString(),
+    headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+  );
+  return Food.fromJSON(json.decode(response.body)['data']);
+}
+
+Future<Food> addProduct(Food food) async {
+//   final String url = '${GlobalConfiguration().getValue('api_base_url')}foods';
+//   final client = new http.Client();
+//   // User _user = userRepo.currentUser.value;
+//   try {
+//     final response = await client.post(
+//       url,
+//       headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+//       body: json.encode(food.addProductMap()),
+//     );
+//     if (response.statusCode == 200) {
+//       return Review.fromJSON(json.decode(response.body)['data']);
+//     } else {
+//       print(CustomTrace(StackTrace.current, message: response.body).toString());
+//       return Review.fromJSON({});
+//     }
+//   } catch (e) {
+//     print(CustomTrace(StackTrace.current, message: url).toString());
+//     return Food.fromJSON({});
+//   }
+// }
+  Uri uri = Helper.getUri('api/foods');
+  User _user = userRepo.currentUser.value;
+  if (_user.apiToken == null) {
+    return new Food();
+  }
+  Map<String, dynamic> _queryParams = {};
+  _queryParams['api_token'] = _user.apiToken;
+  uri = uri.replace(queryParameters: _queryParams);
+
+  //final String url = '${GlobalConfiguration().getString('api_base_url')}orders/${order.id}?$_apiToken';
+  final client = new http.Client();
+  final response = await client.post(
     uri.toString(),
     headers: {HttpHeaders.contentTypeHeader: 'application/json'},
     body: json.encode(food.toMap()),

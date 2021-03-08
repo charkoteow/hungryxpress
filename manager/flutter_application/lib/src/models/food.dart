@@ -103,6 +103,22 @@ class Food {
     return map;
   }
 
+  Map addProductMap() {
+    var map = this.toMap();
+    map["name"] = name;
+    map["price"] = price;
+    map["discountPrice"] = discountPrice;
+    map["description"] = description;
+    map["weight"] = weight.isEmpty ? null : weight;
+    map["unit"] = unit;
+    if (restaurant?.id != 'null') map["restaurant_id"] = restaurant?.id;
+    if (category?.id != 'null') map["category_id"] = category?.id;
+    map["featured"] = featured;
+    map["deliverable"] = deliverable;
+    map["package_items_count"] = packageItemsCount;
+    return map;
+  }
+
   double getRate() {
     double _rate = 0;
     foodReviews.forEach((e) => _rate += double.parse(e.rate));

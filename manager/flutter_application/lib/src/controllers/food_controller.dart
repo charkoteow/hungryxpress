@@ -210,6 +210,61 @@ class FoodController extends ControllerMVC {
     });
   }
 
+  void doRemoveProduct(Food _food) async {
+    deleteProduct(_food).then((value) {
+    }).whenComplete(() {
+      // refreshFood();
+      Navigator.of(context).pop();
+      Navigator.of(context).pop();
+      Navigator.of(context).pop();
+      Fluttertoast.showToast(
+        msg: "Product removed successfully...",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Colors.grey[900],
+        textColor: Colors.white,
+        fontSize: 16.0
+      );
+    });
+  }
+
+  void doAddProduct(Food _food) async {
+  //   restaurantRepo.addRestaurantReview(_review, this.order.foodOrders[0].food.restaurant).then((value) {
+  //     refreshOrder();
+  //     scaffoldKey?.currentState?.showSnackBar(SnackBar(
+  //       content: Text(S.of(context).the_restaurant_has_been_rated_successfully),
+  //     ));
+  //   });
+  // }
+    addProduct(_food).then((value) {
+    }).catchError((e) {
+      Fluttertoast.showToast(
+        msg: "An error occurred, retry to save changes",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Colors.grey[900],
+        textColor: Colors.white,
+        fontSize: 16.0
+      );
+    }).whenComplete(() {
+      // refreshFood();
+      Navigator.of(context).pop();
+      Navigator.of(context).pop();
+      Navigator.of(context).pop();
+      Fluttertoast.showToast(
+        msg: "product added successfully...",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Colors.grey[900],
+        textColor: Colors.white,
+        fontSize: 16.0
+      );
+    });
+  }
+
   void doUpdateExtra(Extra _extra) async {
     updateExtra(_extra).then((value) {
       setState(() {
