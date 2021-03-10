@@ -11,6 +11,7 @@ import 'coupon.dart';
 class Food {
   String id;
   String name;
+  int foodStatus;
   double price;
   double discountPrice;
   Media image;
@@ -34,6 +35,7 @@ class Food {
     try {
       id = jsonMap['id'].toString();
       name = jsonMap['name'];
+      foodStatus = jsonMap['food_status'];
       price = jsonMap['price'] != null ? jsonMap['price'].toDouble() : 0.0;
       discountPrice = jsonMap['discount_price'] != null ? jsonMap['discount_price'].toDouble() : 0.0;
       price = discountPrice != 0 ? discountPrice : price;
@@ -64,6 +66,7 @@ class Food {
       id = '';
       name = '';
       price = 0.0;
+      foodStatus = 0;
       discountPrice = 0.0;
       description = '';
       weight = '';
@@ -87,6 +90,7 @@ class Food {
     var map = new Map<String, dynamic>();
     map["id"] = id;
     map["name"] = name;
+    map["food_status"] = foodStatus;
     map["price"] = price;
     map["discountPrice"] = discountPrice;
     map["description"] = description;

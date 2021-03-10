@@ -41,6 +41,72 @@ class _FoodWidgetState extends StateMVC<FoodWidget> {
     super.initState();
   }
 
+  foodStatus() {
+    if (_con.food.foodStatus == 0) {
+      return SizedBox(
+        width: MediaQuery.of(context).size.width - 110,
+        child: FlatButton(
+          // onPressed: () {
+
+          // },
+          padding: EdgeInsets.symmetric(vertical: 14),
+          disabledColor: Theme.of(context).focusColor.withOpacity(0.4),
+          color: Theme.of(context).accentColor.withOpacity(0.9),
+          shape: StadiumBorder(),
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              'Sold Out',
+              textAlign: TextAlign.start,
+              style: TextStyle(color: Theme.of(context).primaryColor),
+            ),
+          ),
+        ),
+      );
+    } else {
+      return SizedBox(
+        width: MediaQuery.of(context).size.width - 110,
+        child: FlatButton(
+          onPressed: () {
+            if (currentUser.value.apiToken == null) {
+              Navigator.of(context).pushNamed("/Login");
+            } else {
+              if (_con.isSameRestaurants(_con.food)) {
+                _con.addToCart(_con.food);
+              } else {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    // return object of type Dialog
+                    return AddToCartAlertDialogWidget(
+                        oldFood: _con.carts.elementAt(0)?.food,
+                        newFood: _con.food,
+                        onPressed: (food, {reset: true}) {
+                          return _con.addToCart(_con.food, reset: true);
+                        });
+                  },
+                );
+              }
+            }
+          },
+          padding: EdgeInsets.symmetric(vertical: 14),
+          color: Theme.of(context).accentColor,
+          shape: StadiumBorder(),
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              S.of(context).add_to_cart,
+              textAlign: TextAlign.start,
+              style: TextStyle(color: Theme.of(context).primaryColor),
+            ),
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -397,45 +463,7 @@ class _FoodWidgetState extends StateMVC<FoodWidget> {
                                   fit: StackFit.loose,
                                   alignment: AlignmentDirectional.centerEnd,
                                   children: <Widget>[
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width - 110,
-                                      child: FlatButton(
-                                        onPressed: () {
-                                          if (currentUser.value.apiToken == null) {
-                                            Navigator.of(context).pushNamed("/Login");
-                                          } else {
-                                            if (_con.isSameRestaurants(_con.food)) {
-                                              _con.addToCart(_con.food);
-                                            } else {
-                                              showDialog(
-                                                context: context,
-                                                builder: (BuildContext context) {
-                                                  // return object of type Dialog
-                                                  return AddToCartAlertDialogWidget(
-                                                      oldFood: _con.carts.elementAt(0)?.food,
-                                                      newFood: _con.food,
-                                                      onPressed: (food, {reset: true}) {
-                                                        return _con.addToCart(_con.food, reset: true);
-                                                      });
-                                                },
-                                              );
-                                            }
-                                          }
-                                        },
-                                        padding: EdgeInsets.symmetric(vertical: 14),
-                                        color: Theme.of(context).accentColor,
-                                        shape: StadiumBorder(),
-                                        child: Container(
-                                          width: double.infinity,
-                                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                                          child: Text(
-                                            S.of(context).add_to_cart,
-                                            textAlign: TextAlign.start,
-                                            style: TextStyle(color: Theme.of(context).primaryColor),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                                    foodStatus(),
                                     Padding(
                                       padding: const EdgeInsets.symmetric(horizontal: 20),
                                       child: Helper.getPrice(

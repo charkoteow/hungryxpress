@@ -38,7 +38,16 @@ class CheckoutController extends CartController {
     Order _order = new Order();
     _order.foodOrders = new List<FoodOrder>();
     _order.tax = carts[0].food.restaurant.defaultTax;
-    _order.deliveryFee = payment.method == 'Pay on Pickup' ? 0 : carts[0].food.restaurant.deliveryFee;
+    // _order.deliveryFee = payment.method == 'Pay on Pickup' ? 0 : carts[0].food.restaurant.deliveryFee;
+
+    currentAddress = settingRepo.deliveryAddress.value;
+    if (currentAddress.isUnknown()) {
+      deliveryFeeCalculate = carts[0].food.restaurant.deliveryFee;
+    } else {
+      deliveryFeeCalculate = settingRepo.deliveryFee;
+    }
+    _order.deliveryFee = payment.method == 'Pay on Pickup' ? 0 : deliveryFeeCalculate;
+
     OrderStatus _orderStatus = new OrderStatus();
     _orderStatus.id = '1'; // TODO default order status Id
     _order.orderStatus = _orderStatus;
