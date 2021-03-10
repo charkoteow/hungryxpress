@@ -31,6 +31,8 @@ use Prettus\Repository\Criteria\RequestCriteria;
 use Prettus\Repository\Exceptions\RepositoryException;
 use Prettus\Validator\Exceptions\ValidatorException;
 use Stripe\Token;
+use App\Repositories\ExtraRepository;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class OrderController
@@ -50,6 +52,8 @@ class OrderAPIController extends Controller
     private $paymentRepository;
     /** @var  NotificationRepository */
     private $notificationRepository;
+    /** @var  ExtraRepository */
+    private $extraRepository;
 
     /**
      * OrderAPIController constructor.
@@ -60,7 +64,7 @@ class OrderAPIController extends Controller
      * @param NotificationRepository $notificationRepo
      * @param UserRepository $userRepository
      */
-    public function __construct(OrderRepository $orderRepo, FoodOrderRepository $foodOrderRepository, CartRepository $cartRepo, PaymentRepository $paymentRepo, NotificationRepository $notificationRepo, UserRepository $userRepository)
+    public function __construct(OrderRepository $orderRepo, FoodOrderRepository $foodOrderRepository, CartRepository $cartRepo, PaymentRepository $paymentRepo, NotificationRepository $notificationRepo, UserRepository $userRepository, ExtraRepository $extraRepo)
     {
         $this->orderRepository = $orderRepo;
         $this->foodOrderRepository = $foodOrderRepository;
@@ -68,6 +72,7 @@ class OrderAPIController extends Controller
         $this->userRepository = $userRepository;
         $this->paymentRepository = $paymentRepo;
         $this->notificationRepository = $notificationRepo;
+        $this->extraRepository = $extraRepo;
     }
 
     /**
@@ -174,10 +179,20 @@ class OrderAPIController extends Controller
                         $request->only('user_id', 'order_status_id', 'tax', 'delivery_address_id', 'delivery_fee', 'hint')
                     );
                 }
-                foreach ($input['foods'] as $foodOrder) {
+                /*foreach ($input['foods'] as $foodOrder) {
                     $foodOrder['order_id'] = $order->id;
                     $amount += $foodOrder['price'] * $foodOrder['quantity'];
                     $this->foodOrderRepository->create($foodOrder);
+                }*/
+                foreach ($input['foods'] as $foodOrder) {
+                    $foodOrder['order_id'] = $order->id;
+                    $foodOrderCreated = $this->foodOrderRepository->create($foodOrder);
+                    $foodOrderExtras = DB::table('food_order_extras')->where('food_order_id', $foodOrderCreated->id)->get();
+                    foreach ($foodOrderExtras as $foodExtras) {
+                        $extraExtrac = $this->extraRepository->findWithoutFail($foodExtras->extra_id);
+                        $foodOrder['price'] += $extraExtrac->price;
+                    }
+                    $amount += $foodOrder['price'] * $foodOrder['quantity'];
                 }
                 $amount += $order->delivery_fee;
                 $amountWithTax = $amount + ($amount * $order->tax / 100);
@@ -214,10 +229,20 @@ class OrderAPIController extends Controller
             $order = $this->orderRepository->create(
                 $request->only('user_id', 'order_status_id', 'tax', 'delivery_address_id', 'delivery_fee', 'hint')
             );
-            foreach ($input['foods'] as $foodOrder) {
+            /*foreach ($input['foods'] as $foodOrder) {
                 $foodOrder['order_id'] = $order->id;
                 $amount += $foodOrder['price'] * $foodOrder['quantity'];
                 $this->foodOrderRepository->create($foodOrder);
+            }*/
+            foreach ($input['foods'] as $foodOrder) {
+                $foodOrder['order_id'] = $order->id;
+                $foodOrderCreated = $this->foodOrderRepository->create($foodOrder);
+                $foodOrderExtras = DB::table('food_order_extras')->where('food_order_id', $foodOrderCreated->id)->get();
+                foreach ($foodOrderExtras as $foodExtras) {
+                    $extraExtrac = $this->extraRepository->findWithoutFail($foodExtras->extra_id);
+                    $foodOrder['price'] += $extraExtrac->price;
+                }
+                $amount += $foodOrder['price'] * $foodOrder['quantity'];
             }
             $amount += $order->delivery_fee;
             $amountWithTax = $amount + ($amount * $order->tax / 100);
