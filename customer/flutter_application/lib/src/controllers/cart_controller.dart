@@ -200,6 +200,7 @@ class CartController extends ControllerMVC {
         deliveryFeeCalculate = carts[0].food.restaurant.deliveryFee + 50;
       }
       deliveryFee = deliveryFeeCalculate;
+      settingRepo.deliveryFee = deliveryFee;
     }
   }
 
