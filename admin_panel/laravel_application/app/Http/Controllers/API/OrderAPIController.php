@@ -15,6 +15,7 @@ use App\Events\OrderChangedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Notifications\AssignedOrder;
+use App\Notifications\RejectOrder;
 use App\Notifications\NewOrder;
 use App\Notifications\StatusChangedOrder;
 use App\Repositories\CartRepository;
@@ -300,6 +301,13 @@ class OrderAPIController extends Controller
                     $driver = $this->userRepository->findWithoutFail($input['driver_id']);
                     if (!empty($driver)) {
                         Notification::send([$driver], new AssignedOrder($order));
+                    }
+                }
+
+                if ($input['driver_id'] == null) {
+                    $driver = $this->userRepository->findWithoutFail($input['driver_id']);
+                    if (!empty($driver)) {
+                        Notification::send($order->foodOrders[0]->food->restaurant->users, new RejectOrder($order));
                     }
                 }
             }
