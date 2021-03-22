@@ -1,5 +1,8 @@
 import 'package:deliveryboy/src/elements/CircularLoadingWidget.dart';
 import 'package:deliveryboy/src/elements/FoodOrderItemWidget.dart';
+import 'package:deliveryboy/src/models/conversation.dart';
+import 'package:deliveryboy/src/models/restaurant.dart';
+import 'package:deliveryboy/src/models/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -564,6 +567,18 @@ class _OrderWidgetState extends StateMVC<OrderWidget> with SingleTickerProviderS
                                 child: FlatButton(
                                   padding: EdgeInsets.all(0),
                                   disabledColor: Theme.of(context).focusColor.withOpacity(0.4),
+                                  onPressed: () {
+                                    Restaurant _market = _con.order.foodOrders[0].food.restaurant;
+                                    List<User> _users = _market.users
+                                        .map((e) {
+                                          e.image = _market.image;
+                                          return e;
+                                        })
+                                        .toSet()
+                                        .toList();
+                                    _users.insert(0, _con.order.user);
+                                    Navigator.of(context).pushNamed('/Chat', arguments: RouteArgument(param: new Conversation(_users, name: _market.name)));
+                                  },
                                   //onPressed: () {
 //                                    Navigator.of(context).pushNamed('/Profile',
 //                                        arguments: new RouteArgument(param: _con.order.deliveryAddress));
@@ -577,6 +592,25 @@ class _OrderWidgetState extends StateMVC<OrderWidget> with SingleTickerProviderS
                                   shape: StadiumBorder(),
                                 ),
                               ),
+//                               SizedBox(
+//                                 width: 42,
+//                                 height: 42,
+//                                 child: FlatButton(
+//                                   padding: EdgeInsets.all(0),
+//                                   disabledColor: Theme.of(context).focusColor.withOpacity(0.4),
+//                                   //onPressed: () {
+// //                                    Navigator.of(context).pushNamed('/Profile',
+// //                                        arguments: new RouteArgument(param: _con.order.deliveryAddress));
+//                                   //},
+//                                   child: Icon(
+//                                     Icons.person,
+//                                     color: Theme.of(context).primaryColor,
+//                                     size: 24,
+//                                   ),
+//                                   color: Theme.of(context).accentColor.withOpacity(0.9),
+//                                   shape: StadiumBorder(),
+//                                 ),
+//                               ),
                             ],
                           ),
                         ),

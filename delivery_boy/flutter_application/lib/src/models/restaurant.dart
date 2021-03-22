@@ -1,5 +1,6 @@
 import '../helpers/custom_trace.dart';
 import '../models/media.dart';
+import 'user.dart';
 
 class Restaurant {
   String id;
@@ -20,6 +21,7 @@ class Restaurant {
   bool availableForDelivery;
   double deliveryRange;
   double distance;
+  List<User> users;
 
   Restaurant();
 
@@ -43,6 +45,12 @@ class Restaurant {
       closed = jsonMap['closed'] ?? false;
       availableForDelivery = jsonMap['available_for_delivery'] ?? false;
       distance = jsonMap['distance'] != null ? double.parse(jsonMap['distance'].toString()) : 0.0;
+      users = jsonMap['users'] != null && (jsonMap['users'] as List).length > 0
+          ? List.from(jsonMap['users'])
+              .map((element) => User.fromJSON(element))
+              .toSet()
+              .toList()
+          : [];
     } catch (e) {
       id = '';
       name = '';
@@ -62,6 +70,7 @@ class Restaurant {
       closed = false;
       availableForDelivery = false;
       distance = 0.0;
+      users = [];
       print(CustomTrace(StackTrace.current, message: e));
     }
   }
